@@ -4,6 +4,7 @@ import PageHead from '../../components/PageHead.astro';
 import Timetable from '../../components/agenda/Timetable.astro';
 import SessionDialog from '../../components/agenda/SessionDialog.astro';
 import FlapText from '../../components/FlapText.astro';
+import Button from '../../components/Button.astro';
 import { sessions, typeLabels, isListed, phases } from '../../data/sessions';
 import { site } from '../../data/site';
 import { rooms } from '../../data/rooms';
@@ -13,6 +14,7 @@ import type { SessionType } from '../../types/agenda';
 const order: SessionType[] = [
   'keynote',
   'talk',
+  'rerun',
   'lightning',
   'workshop',
   'submission',
@@ -28,7 +30,7 @@ const filterTypes = order.filter((t) => present.has(t));
 
 <BaseLayout
   title="議程"
-  description={`QRACON 2026 議程草案：${site.dateLabel}（${site.weekday}）在${site.venue.org}${site.venue.name}，10 處場地同時進行的一天。`}
+  description={`QRACON 2026 議程草案：${site.dateLabel}（${site.weekday}）在${site.venue.org}${site.venue.name}，${rooms.length} 處場地同時進行的一天。`}
 >
   <link slot="head" rel="expect" href="#timetable" blocking="render" />
   <PageHead
@@ -155,6 +157,15 @@ const filterTypes = order.filter((t) => present.has(t));
     </div>
     <p class="agenda__scroll-hint">左右滑動切換場地，點選議程查看詳情。</p>
     <Timetable />
+    <div class="agenda__poster">
+      <Button
+        href="/2026_QRACON_Agenda.jpg"
+        variant="line"
+        download="QRACON-2026-Agenda.jpg"
+      >
+        下載議程海報（JPG）
+      </Button>
+    </div>
     <SessionDialog />
   </div>
 </BaseLayout>
@@ -163,6 +174,11 @@ const filterTypes = order.filter((t) => present.has(t));
   .agenda {
     display: grid;
     gap: var(--space-6);
+  }
+
+  .agenda__poster {
+    display: flex;
+    justify-content: flex-start;
   }
 
   .now-board {

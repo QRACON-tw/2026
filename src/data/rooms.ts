@@ -1,16 +1,17 @@
 import type { Room, RoomId } from '../types/agenda';
 
 export const rooms: Room[] = [
-  { id: 'hall', name: '國際會議廳', short: '國際會議廳', kind: 'hall' },
-  { id: 'key', name: '關鍵中心', short: '關鍵中心', kind: 'center' },
-  { id: 'abrc', name: '農生中心', short: '農生中心', kind: 'center' },
-  { id: 'outA', name: '場外活動 A', short: '場外 A', kind: 'outdoor' },
-  { id: 'outB', name: '場外活動 B', short: '場外 B', kind: 'outdoor' },
-  { id: 'm60', name: '會議室（60 人）', short: '會議室 60', kind: 'meeting', capacity: 60 },
-  { id: 'm38', name: '會議室（38 人）', short: '會議室 38', kind: 'meeting', capacity: 38 },
-  { id: 'm50', name: '會議室（50 人）', short: '會議室 50', kind: 'meeting', capacity: 50 },
-  { id: 'm27', name: '會議室（27 人）', short: '會議室 27', kind: 'meeting', capacity: 27 },
-  { id: 'outC', name: '場外活動 C', short: '場外 C', kind: 'outdoor' },
+  { id: 'hall', name: '國際會議廳', short: '國際會議廳', kind: 'hall', capacity: 300 },
+  { id: 'key', name: '關鍵中心演講廳', short: '關鍵中心', kind: 'center', capacity: 100 },
+  {
+    id: 'multi12',
+    name: '多功能會議室（1）+（2）',
+    short: '多功能（1）+（2）',
+    kind: 'meeting',
+    capacity: 100,
+  },
+  { id: 'multi3', name: '多功能會議室（3）', short: '多功能（3）', kind: 'meeting', capacity: 50 },
+  { id: 'room1', name: '第一會議室', short: '第一會議室', kind: 'meeting', capacity: 27 },
 ];
 
 export const roomIndex = new Map<RoomId, number>(rooms.map((room, i) => [room.id, i]));
@@ -20,4 +21,3 @@ export function roomById(id: RoomId): Room {
   if (!room) throw new Error(`Unknown room: ${id}`);
   return room;
 }
-

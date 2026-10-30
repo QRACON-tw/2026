@@ -2,6 +2,7 @@ export type SessionType =
   | 'plenary'
   | 'keynote'
   | 'talk'
+  | 'rerun'
   | 'lightning'
   | 'workshop'
   | 'submission'
@@ -27,14 +28,9 @@ export interface Room {
 export type RoomId =
   | 'hall'
   | 'key'
-  | 'abrc'
-  | 'outA'
-  | 'outB'
-  | 'm60'
-  | 'm38'
-  | 'm50'
-  | 'm27'
-  | 'outC';
+  | 'multi12'
+  | 'multi3'
+  | 'room1';
 
 export interface Session {
   

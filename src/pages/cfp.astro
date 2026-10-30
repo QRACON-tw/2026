@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import RowTable from '../components/RowTable.astro';
+import EmptyState from '../components/EmptyState.astro';
 import { sessions } from '../data/sessions';
 import { hhmm } from '../utils/time';
 
@@ -17,9 +18,9 @@ const slots = sessions.filter((s) => s.type === 'submission');
   <div class="wrap cfp-page">
     <section class="cfp-page__slots" aria-labelledby="slots-title">
       <h2 id="slots-title">草案中的發表時段</h2>
-      <ol class="slot-list" role="list">
-        {
-          slots.map((s) => (
+      {slots.length ? (
+        <ol class="slot-list" role="list">
+          {slots.map((s) => (
             <li>
               <a href={`/agenda/${s.id}/`}>
                 <time class="slot-list__time" datetime={s.start}>
@@ -28,9 +29,11 @@ const slots = sessions.filter((s) => s.type === 'submission');
                 <span class="slot-list__title">{s.title}</span>
               </a>
             </li>
-          ))
-        }
-      </ol>
+          ))}
+        </ol>
+      ) : (
+        <EmptyState label="投稿時段待公布" note="目前議程草案沒有保留學生投稿時段。" />
+      )}
     </section>
 
     <section class="cfp-page__timeline" aria-labelledby="timeline-title">

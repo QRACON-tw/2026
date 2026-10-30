@@ -21,7 +21,8 @@ export function initCrosshair() {
     }
     for (const m of marks) {
       const row = Number(m.dataset.row);
-      m.toggleAttribute('data-hot', !!cell && row < r1 && row + 2 > r0);
+      const span = Number(m.dataset.span) || 2;
+      m.toggleAttribute('data-hot', !!cell && row < r1 && row + span > r0);
     }
   };
 

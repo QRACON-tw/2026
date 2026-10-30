@@ -8,6 +8,7 @@ import {
   sessionRoomLabel,
   orderedSessions,
   rowTemplate,
+  markerRows,
   timeMarkers,
   formatMinutes,
   eventDateTime,
@@ -33,7 +34,8 @@ import Words from '../Words.astro';
       <div
         class="tt__mark"
         data-row={gridRow(minutes)}
-        style={`--r0: ${gridRow(minutes)}`}
+        data-span={markerRows}
+        style={`--r0: ${gridRow(minutes)}; --r-span: ${markerRows}`}
         aria-hidden="true"
       >
         <time datetime={eventDateTime(minutes)}>{formatMinutes(minutes)}</time>
@@ -176,7 +178,7 @@ import Words from '../Words.astro';
   }
   .tt__mark {
     grid-column: 2;
-    grid-row: var(--r0) / span 2;
+    grid-row: var(--r0) / span var(--r-span);
     display: grid;
     place-items: center;
     margin-block: 1px;

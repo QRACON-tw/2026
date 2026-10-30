@@ -20,7 +20,8 @@ const busyRooms = (from: string, to: string) => {
   const [a, b] = [toMinutes(from), toMinutes(to)];
   const used = new Set<RoomId>();
   for (const s of sessions) {
-    if (!isListed(s) || s.rooms === 'all') continue;
+    // 海報展示是整段展期，不計入「同時進行的分軌」。
+    if (!isListed(s) || s.rooms === 'all' || s.type === 'exhibit') continue;
     if (minutesOf(s.start) < b && minutesOf(s.end) > a) s.rooms.forEach((r) => used.add(r));
   }
   return used.size;
@@ -39,17 +40,17 @@ const roomsOf = (id: string) => {
 const board = [
   { time: hhmm(byId('check-in').start), item: '報到', place: '全體' },
   { time: hhmm(byId('opening').start), item: '開幕', place: '全體' },
-  { time: hhmm(byId('keynote-dialogue').start), item: '主題對談', place: '全體' },
+  { time: hhmm(byId('keynote-dialogue').start), item: '開場嘉賓對談', place: '全體' },
   { time: hhmm(byId('keynote').start), item: '主題演講', place: '全體' },
   {
-    time: '10:30',
-    item: '上午分軌與場外活動',
-    place: `${busyRooms('10:30', '12:00')} 處場地同時進行`,
+    time: '10:50',
+    item: '上午分軌',
+    place: `${busyRooms('10:50', '12:00')} 處場地同時進行`,
   },
   {
-    time: hhmm(byId('lunch-centers').start),
+    time: hhmm(byId('lunch').start),
     item: '午餐',
-    place: `${roomsOf('lunch-centers')}、${roomsOf('lunch-rooms')}`,
+    place: roomsOf('lunch'),
   },
   {
     time: '13:30',
@@ -57,9 +58,9 @@ const board = [
     place: `${busyRooms('13:30', '16:00')} 處場地同時進行`,
   },
   {
-    time: hhmm(byId('open-lightning').start),
-    item: '任意閃電講',
-    place: roomsOf('open-lightning'),
+    time: '15:30',
+    item: '重播與工作坊',
+    place: `${busyRooms('15:30', '16:30')} 處場地同時進行`,
   },
   { time: hhmm(byId('closing').start), item: '閉幕', place: '全體' },
   { time: hhmm(byId('departure').start), item: '賦歸', place: '—' },
@@ -159,8 +160,7 @@ const serial = String(site.edition).padStart(4, '0');
         ）是由學生主導的量子科技年會。我們想讓學術界、產業界與教育端，在同一天、同一個院區裡交流，也想把中學到大學之間那道斷層接起來。
       </p>
       <p>
-        議程從量子電腦的基礎，一路排到 HPC、資安、藥物開發與量子感測；場外還有 RPG
-        導遊團、對戰遊戲和塗鴉躲貓貓。高中生和研究者，都能在時刻表上找到自己的那一場。
+        議程從量子電腦的基礎，一路排到 HPC、資安、藥物開發與量子感測；還有海報展示、工作坊與量子辯論。高中生和研究者，都能在時刻表上找到自己的那一場。
       </p>
       <div class="about__theme">
         <span class="about__theme-label">QRACON 2026 / THEME</span>

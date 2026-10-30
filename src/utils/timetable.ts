@@ -5,7 +5,9 @@ import type { Session } from '../types/agenda';
 
 const DAY_START = toMinutes('08:00');
 const DAY_END = toMinutes('17:30');
-const SLOT = 15;
+// 5-minute slots keep 09:20 / 09:50 / 10:50 / 11:20 on grid lines.
+// --slot and --slot-band remain the heights of a 15-minute slot; each row is a third.
+const SLOT = 5;
 const ROWS = (DAY_END - DAY_START) / SLOT;
 // Grid gridRow 1 contains room headings; session rows start at 2.
 export const gridRow = (minutes: number) => 2 + (minutes - DAY_START) / SLOT;
@@ -34,8 +36,9 @@ for (let i = 0; i < ROWS; i++) {
   else rowRuns.push({ band, count: 1 });
 }
 export const rowTemplate = rowRuns
-  .map((run) => `repeat(${run.count}, var(${run.band ? '--slot-band' : '--slot'}))`)
+  .map((run) => `repeat(${run.count}, calc(var(${run.band ? '--slot-band' : '--slot'}) / 3))`)
   .join(' ');
+export const markerRows = 30 / SLOT;
 export const timeMarkers = Array.from(
   { length: (DAY_END - DAY_START) / 30 },
   (_, index) => DAY_START + index * 30,
