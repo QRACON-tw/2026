@@ -381,10 +381,11 @@ import Words from '../Words.astro';
     padding: 0;
     gap: 0;
     overflow: visible;
-    background: var(--color-ink);
-    color: var(--color-white);
-    box-shadow: inset 0 1px 0 var(--color-on-ink-soft);
-    --color-focus: var(--color-white);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border-block: var(--rule-mid) solid var(--color-ink);
+    --color-focus: var(--color-ink);
+    --chad-bg: var(--color-paper);
   }
   .s--all .s__title {
     position: sticky;
@@ -414,7 +415,7 @@ import Words from '../Words.astro';
     align-self: center;
     width: fit-content;
     margin-left: 0.5rem;
-    color: var(--color-on-ink-soft);
+    color: var(--color-ink-soft);
   }
   .s--break:not(.s--all) {
     grid-template-rows: 3.5rem minmax(0, 1fr) 3.5rem;
@@ -495,14 +496,6 @@ import Words from '../Words.astro';
   .s[data-state='now'] .s__title,
   .s[data-state='now'] .s__meta {
     background-color: var(--color-ink);
-  }
-  .s--all[data-hot] {
-    background: var(--color-white);
-    color: var(--color-ink);
-    --color-focus: var(--color-ink);
-  }
-  .s--all[data-hot] .s__title {
-    background: var(--color-white);
   }
   .s[data-state='past'] {
     color: var(--color-ink-muted);

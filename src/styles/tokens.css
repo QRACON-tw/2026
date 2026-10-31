@@ -12,8 +12,8 @@
   --color-ink-raised: #262626;
 
   --color-focus: var(--color-ink);
-  --color-selection-bg: var(--color-ink);
-  --color-selection-fg: var(--color-paper);
+  --color-selection-bg: var(--color-rule-fine);
+  --color-selection-fg: var(--color-ink);
 
   --font-sans: var(
     --font-noto-sans-tc,
