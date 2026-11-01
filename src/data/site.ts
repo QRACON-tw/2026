@@ -59,7 +59,7 @@ export const site: SiteInfo = {
     status: 'open',
     url: 'https://sqcs.kktix.cc/events/qracon2026',
     // 票種多於一種，這裡只放最低價；完整票種表見 src/data/tickets.ts。
-    price: String(lowestFare),
+    price: lowestFare.toLocaleString('en-US'),
   },
   contactEmail: 'sqcs12345@gmail.com',
   social: [{ label: 'Instagram', url: 'https://www.instagram.com/entangletech.2023' }],

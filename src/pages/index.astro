@@ -9,7 +9,7 @@ import FlapText from '../components/FlapText.astro';
 import StationSign from '../components/StationSign.astro';
 import wordmark from '../assets/brand/qracon-wordmark.png';
 import { site } from '../data/site';
-import { ticketGroups } from '../data/tickets';
+import { ticketGroups, lowestFare } from '../data/tickets';
 import { sessions, isListed } from '../data/sessions';
 import { roomById } from '../data/rooms';
 import { hhmm, minutesOf, toMinutes } from '../utils/time';
@@ -94,8 +94,8 @@ const serial = String(site.edition).padStart(4, '0');
         <p class="hero__en">{site.nameEn}</p>
       </div>
 
-      <Ticket class="hero__ticket" stamp={site.rocDate} labelledby="ticket-station">
-        <h2 class="visually-hidden">活動資訊</h2>
+      <Ticket class="hero__ticket" slits stamp={site.rocDate} labelledby="ticket-title">
+        <h2 class="visually-hidden" id="ticket-title">活動資訊</h2>
         <p class="tk-issuer">
           <span>{site.nameZh}</span>
           <span class="tk-serial">
@@ -153,9 +153,12 @@ const serial = String(site.edition).padStart(4, '0');
               rel="noopener"
             >
               報名取票
+              <span class="visually-hidden">（另開新分頁）</span>
             </Button>
           ) : (
-            <span class="tk-status">報名資訊待公布</span>
+            <span class="tk-status">
+              {site.registration.status === 'closed' ? '報名已截止' : '報名資訊待公布'}
+            </span>
           )}
           <Button href="/agenda/" variant={registrationOpen ? 'line' : 'ink'} icon="arrow-right">
             看議程草案
@@ -249,7 +252,7 @@ const serial = String(site.edition).padStart(4, '0');
       <p class="fare__eyebrow">QRACON 2026 / FARE</p>
       <h2 class="section-title" id="fare-title">票種與票價</h2>
       <p class="fare__lede">
-        線上購票在 KKTIX。學校或班級團體報名免報名費，來信
+        線上購票在 KKTIX，最低票價 {lowestFare} 元是學生票。學校或班級團體報名免報名費，來信
         <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
         申請。
       </p>
@@ -273,17 +276,23 @@ const serial = String(site.edition).padStart(4, '0');
         ticketGroups.map((group) => (
           <tbody>
             <tr class="fare__group">
-              <th scope="colgroup" colspan="3">
-                <span class="fare__group-name">{group.name}</span>
-                {group.note && <span class="fare__group-note">{group.note}</span>}
+              <th scope="rowgroup" colspan="3">
+                {group.name}
               </th>
             </tr>
+            {group.note && (
+              <tr>
+                <td colspan="3" class="fare__group-note">
+                  {group.note}
+                </td>
+              </tr>
+            )}
             {group.rows.map((row) => (
               <tr>
                 <th scope="row">{row.name}</th>
-                <td class="fare__note">{row.note}</td>
+                <td class="fare__note">{row.note ?? '—'}</td>
                 <td class="fare__price">
-                  <span class="fare__currency">NT$</span>
+                  <span class="fare__currency" aria-hidden="true">NT$</span>
                   <span class="fare__amount">{row.price.toLocaleString('en-US')}</span>
                 </td>
               </tr>
@@ -295,14 +304,23 @@ const serial = String(site.edition).padStart(4, '0');
 
     <div class="fare__foot">
       <p>售票期間、名額與現場票是否開放，以 KKTIX 活動頁為準。</p>
-      <Button
-        href={site.registration.url ?? undefined}
-        icon="arrow-up-right"
-        target="_blank"
-        rel="noopener"
-      >
-        到 KKTIX 報名
-      </Button>
+      {
+        registrationOpen ? (
+          <Button
+            href={site.registration.url ?? undefined}
+            icon="arrow-up-right"
+            target="_blank"
+            rel="noopener"
+          >
+            到 KKTIX 報名
+            <span class="visually-hidden">（另開新分頁）</span>
+          </Button>
+        ) : (
+          <span class="tk-status">
+            {site.registration.status === 'closed' ? '報名已截止' : '報名資訊待公布'}
+          </span>
+        )
+      }
     </div>
   </section>
 
@@ -567,25 +585,27 @@ const serial = String(site.edition).padStart(4, '0');
   .fare__group th {
     padding: var(--space-6) var(--space-3) var(--space-2);
     border-bottom: var(--rule-hair) solid var(--color-ink);
+    font-size: var(--text-md);
+    font-weight: var(--weight-black);
+    letter-spacing: 0.18em;
     text-align: left;
+  }
+
+  /* 有說明列時，分隔線交給說明列畫，避免兩條線緊贴。 */
+  .fare__group:has(+ .fare__note-row) th {
+    border-bottom: 0;
   }
 
   .fare__table tbody + tbody .fare__group th {
     border-top: var(--rule-mid) solid var(--color-ink);
   }
 
-  .fare__group-name {
-    font-size: var(--text-md);
-    font-weight: var(--weight-black);
-    letter-spacing: 0.18em;
-  }
-
   .fare__group-note {
-    margin-left: var(--space-3);
+    padding: 0 var(--space-3) var(--space-2);
+    border-bottom: var(--rule-hair) solid var(--color-ink);
     color: var(--color-ink-soft);
     font-size: var(--text-sm);
-    font-weight: var(--weight-regular);
-    letter-spacing: 0.02em;
+    text-align: left;
   }
 
   .fare__table tbody th,
@@ -999,7 +1019,7 @@ const serial = String(site.edition).padStart(4, '0');
     padding-block: 1rem;
   }
   .tk-rows > div + div {
-    border-left: 1px solid #d9d9d9;
+    border-left: var(--rule-hair) solid var(--color-paper);
     padding-left: 1rem;
   }
   .tk-rows dt {
@@ -1140,8 +1160,10 @@ const serial = String(site.edition).padStart(4, '0');
       font-size: var(--text-xs);
     }
     .fare__group-note {
-      display: block;
-      margin: var(--space-1) 0 0;
+      padding: 0 var(--space-1) var(--space-2);
+    }
+    .fare__amount {
+      font-size: var(--text-base);
     }
     .board__place {
       font-size: 0.75rem;

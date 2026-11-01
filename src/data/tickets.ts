@@ -5,6 +5,8 @@ export interface TicketRow {
   name: string;
   note?: string;
   price: number;
+  /** 加購項（餐券），不算入場票價。 */
+  addOn?: boolean;
 }
 
 export interface TicketGroup {
@@ -25,7 +27,7 @@ export const ticketGroups: TicketGroup[] = [
       { name: '3 人團體學生票', note: '進場出示學生證', price: 300 },
       { name: '15 人團體一般票', price: 1800 },
       { name: '15 人團體學生票', note: '進場出示學生證', price: 1200 },
-      { name: '餐券', note: '加購，不含入場', price: 60 },
+      { name: '餐券', note: '加購，不含入場', price: 60, addOn: true },
     ],
   },
   {
@@ -50,5 +52,5 @@ export const ticketGroups: TicketGroup[] = [
 export const lowestFare = Math.min(
   ...ticketGroups
     .filter((group) => group.id !== 'sponsor')
-    .flatMap((group) => group.rows.filter((row) => row.name !== '餐券').map((row) => row.price)),
+    .flatMap((group) => group.rows.filter((row) => !row.addOn).map((row) => row.price)),
 );

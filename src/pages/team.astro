@@ -10,7 +10,10 @@ const withPhoto = teamGroups
   .filter((name) => photoOf(name)).length;
 ---
 
-<BaseLayout title="籌備團隊" description="QRACON 2026 籌備團隊名單。">
+<BaseLayout
+  title="籌備團隊"
+  description="QRACON 2026 籌備團隊名單：召組、行銷組、財務組、設計組、議程組、攝影組與機動組，共 7 組 34 人。"
+>
   <PageHead title="籌備團隊" status={`${teamHeadcount} 人`} />
 
   <nav class="wrap team__index" aria-label="組別">
@@ -18,9 +21,9 @@ const withPhoto = teamGroups
       {
         teamGroups.map((group) => (
           <li>
-            <a href={`#group-${group.id}`}>
+            <a href={`#group-${group.id}`} aria-label={`${group.name}，${group.members.length} 人`}>
               {group.name}
-              <span class="team__index-count">{group.members.length}</span>
+              <span class="team__index-count" aria-hidden="true">{group.members.length}</span>
             </a>
           </li>
         ))
@@ -36,7 +39,10 @@ const withPhoto = teamGroups
             <div class="team__head">
               <h2 class="team__name">{group.name}</h2>
               <p class="team__en">{group.en}</p>
-              <p class="team__count">{group.members.length} 人</p>
+              <p class="team__count">
+                {group.members.length}
+                <span class="team__count-unit"> 人</span>
+              </p>
             </div>
             <p class="team__blurb">{group.blurb}</p>
             <ul class="team__members" role="list">
@@ -50,17 +56,15 @@ const withPhoto = teamGroups
                           class="crew__photo"
                           src={photo}
                           alt=""
-                          widths={[160, 320]}
-                          sizes="(min-width: 48rem) 6.5rem, 22vw"
+                          widths={[160, 240, 320, 400]}
+                          sizes="(min-width: 48rem) 7.2rem, 29vw"
                           format="webp"
-                          loading="lazy"
+                          loading={group.id === 'core' ? 'eager' : 'lazy'}
                         />
                         <p class="crew__label">{member}</p>
                       </>
                     ) : (
-                      <p class="crew__plate">
-                        <span>{member}</span>
-                      </p>
+                      <p class="crew__plate">{member}</p>
                     )}
                   </li>
                 );
@@ -88,14 +92,16 @@ const withPhoto = teamGroups
 
   .team__index a {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: var(--space-2);
-    padding: 0.3rem 0.6rem;
-    border: var(--rule-hair) solid var(--color-ink);
+    min-height: 2.5rem;
+    padding: var(--space-1) var(--space-3);
+    border: var(--rule-mid) solid var(--color-ink);
     border-radius: var(--radius-chip);
     background: var(--color-white);
     font-size: var(--text-sm);
     font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
     text-decoration: none;
     transition:
       background-color var(--dur-fast) var(--ease-out),
@@ -126,7 +132,6 @@ const withPhoto = teamGroups
 
   .team__group {
     padding-block: var(--space-5);
-    scroll-margin-top: var(--space-5);
     border-bottom: var(--rule-hair) solid var(--color-ink);
   }
 
@@ -147,8 +152,16 @@ const withPhoto = teamGroups
   .team__en,
   .team__count {
     color: var(--color-ink-soft);
+    font-family: var(--font-sign);
     font-size: var(--text-xs);
+    font-weight: var(--weight-sign-heavy);
+    font-variant-numeric: tabular-nums;
     letter-spacing: 0.1em;
+  }
+
+  .team__count-unit {
+    font-family: var(--font-sans);
+    font-weight: var(--weight-bold);
   }
 
   .team__en {
@@ -172,12 +185,13 @@ const withPhoto = teamGroups
   .crew {
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
-    aspect-ratio: 1 / 1.26;
-    border: var(--rule-hair) solid var(--color-ink);
+    aspect-ratio: 1 / 1.28;
+    border: var(--rule-thin) solid var(--color-ink);
     background: var(--color-white);
     overflow: hidden;
   }
 
+  /* 頭像來源已經是 1:1，這裡不再裁第二次。 */
   .crew__photo {
     display: block;
     width: 100%;
@@ -206,6 +220,7 @@ const withPhoto = teamGroups
   /* 沒有頭像的人：整張卡換成名牌，不重複寫名字。 */
   .crew__plate {
     grid-row: 1 / -1;
+    height: 100%;
     background: var(--color-paper-deep);
     font-weight: var(--weight-black);
     letter-spacing: 0.04em;
@@ -218,11 +233,6 @@ const withPhoto = teamGroups
   }
 
   @media (max-width: 47.99rem) {
-    .team__group {
-      grid-template-columns: 1fr;
-      row-gap: var(--space-3);
-    }
-
     .team__head {
       gap: 0 var(--space-2);
       margin-bottom: var(--space-3);

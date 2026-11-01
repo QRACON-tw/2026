@@ -4,6 +4,12 @@ import PageHead from '../components/PageHead.astro';
 import RowTable from '../components/RowTable.astro';
 import EmptyState from '../components/EmptyState.astro';
 import { site } from '../data/site';
+import { ticketGroups } from '../data/tickets';
+
+const sponsorTickets = ticketGroups
+  .find((group) => group.id === 'sponsor')
+  ?.rows.map((row) => `${row.name.replace('贊助', '')} ${row.price.toLocaleString('en-US')}`)
+  .join('／');
 ---
 
 <BaseLayout title="贊助" description="支持 QRACON 2026 學生量子電腦年會：贊助方案與聯絡方式。">
@@ -43,7 +49,7 @@ import { site } from '../data/site';
           { label: '攤位與展示', value: null },
           {
             label: '贊助票',
-            value: '黃金 1,000／白金 3,000／鑽石 5,000',
+            value: sponsorTickets ?? null,
             note: '憑票券於報到處領取 QRACON 紀念品，購票在 KKTIX。',
           },
           {
