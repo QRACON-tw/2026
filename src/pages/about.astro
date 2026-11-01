@@ -2,15 +2,31 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import RowTable from '../components/RowTable.astro';
+import type { Row } from '../components/RowTable.astro';
 import Stamp from '../components/Stamp.astro';
 import { site } from '../data/site';
+
+const orgRows: Row[] = [
+  { label: '指導單位', value: site.advisor },
+  { label: '主辦單位', value: site.organizers?.join('、') ?? null, stamp: '待確認' },
+  {
+    label: '聯絡信箱',
+    value: site.contactEmail,
+    href: site.contactEmail ? `mailto:${site.contactEmail}` : undefined,
+  },
+  ...(site.social.length
+    ? site.social.map((item) => ({ label: '社群帳號', value: item.label, href: item.url }))
+    : [{ label: '社群帳號', value: null }]),
+];
 
 const editions = [
   {
     year: '2026',
     label: '第四屆',
     place: `${site.venue.city}・${site.venue.org}${site.venue.name}`,
-    theme: site.theme.title,
+    theme: site.theme.title
+      ? [site.theme.title, site.theme.tagline].filter(Boolean).join('：')
+      : null,
     current: true,
   },
   {
@@ -69,18 +85,7 @@ const editions = [
       <h2 class="visually-hidden" id="org-title">
         單位與聯絡
       </h2>
-      <RowTable
-        caption="單位與聯絡"
-        rows={[
-          { label: '指導單位', value: site.advisor },
-          { label: '主辦單位', value: site.organizers?.join('、') ?? null, stamp: '待確認' },
-          { label: '聯絡信箱', value: site.contactEmail },
-          {
-            label: '社群帳號',
-            value: site.social.length ? site.social.map((s) => s.label).join('、') : null,
-          },
-        ]}
-      />
+      <RowTable caption="單位與聯絡" rows={orgRows} />
     </section>
   </div>
 </BaseLayout>

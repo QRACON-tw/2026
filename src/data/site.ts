@@ -1,4 +1,6 @@
 
+import { lowestFare } from './tickets';
+
 export type RegistrationStatus = 'soon' | 'open' | 'closed';
 
 interface SiteInfo {
@@ -32,33 +34,36 @@ export const site: SiteInfo = {
   nameEn: 'Quantum Revolution Assembly CONvention',
   edition: 4,
   editionLabel: '第四屆',
-  date: '2026-12-05',
-  dateLabel: '2026.12.05',
-  weekday: '六',
-  weekdayEn: 'SAT',
-  rocDate: '115.12.05',
+  date: '2026-12-13',
+  dateLabel: '2026.12.13',
+  weekday: '日',
+  weekdayEn: 'SUN',
+  rocDate: '115.12.13',
   checkIn: '08:00',
   timeZone: 'Asia/Taipei',
   venue: {
     org: '中央研究院',
     name: '南部院區',
     city: '臺南',
+    // TODO(venue): 門牌地址待主辦團隊確認。
     address: null,
   },
   advisor: 'EntangleTech',
-  organizers: null,
+  organizers: ['EntangleTech 前瞻量子教育平台'],
   theme: {
-    title: null,
-    tagline: null,
+    title: '薛丁格的貓',
+    tagline: '量子冒險者',
   },
   registration: {
-    status: 'soon',
-    url: null,
-    price: null,
+    // 售票頁：KKTIX（2026-11-01 核對，已開賣）。
+    status: 'open',
+    url: 'https://sqcs.kktix.cc/events/qracon2026',
+    // 票種多於一種，這裡只放最低價；完整票種表見 src/data/tickets.ts。
+    price: String(lowestFare),
   },
-  contactEmail: null,
-  social: [],
+  contactEmail: 'sqcs12345@gmail.com',
+  social: [{ label: 'Instagram', url: 'https://www.instagram.com/entangletech.2023' }],
   description:
-    'QRACON 2026 學生量子電腦年會，2026 年 12 月 5 日（六）在中央研究院南部院區舉行。第四屆，由學生主導，讓量子科技的學術界、產業界與教育端在同一天交流。',
+    'QRACON 2026 學生量子電腦年會，2026 年 12 月 13 日（日）在中央研究院南部院區舉行。第四屆，由學生主導，讓量子科技的學術界、產業界與教育端在同一天交流。',
 };
 

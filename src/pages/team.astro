@@ -1,21 +1,236 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
-import EmptyState from '../components/EmptyState.astro';
+import { teamGroups, teamHeadcount, crossGroupMembers, photoOf } from '../data/team';
+
+const withPhoto = teamGroups
+  .flatMap((group) => group.members)
+  .filter((name, i, all) => all.indexOf(name) === i)
+  .filter((name) => photoOf(name)).length;
 ---
 
 <BaseLayout title="籌備團隊" description="QRACON 2026 籌備團隊名單。">
-  <PageHead title="籌備團隊" status="待公布" />
+  <PageHead title="籌備團隊" status={`${teamHeadcount} 人`} />
 
-  <div class="wrap team-page">
-    <EmptyState class="team-page__empty" label="名單待公布" />
+  <nav class="wrap team__index" aria-label="組別">
+    <ul role="list">
+      {
+        teamGroups.map((group) => (
+          <li>
+            <a href={`#group-${group.id}`}>
+              {group.name}
+              <span class="team__index-count">{group.members.length}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="wrap team">
+    <ol class="team__groups" role="list">
+      {
+        teamGroups.map((group) => (
+          <li class="team__group" id={`group-${group.id}`}>
+            <div class="team__head">
+              <h2 class="team__name">{group.name}</h2>
+              <p class="team__en">{group.en}</p>
+              <p class="team__count">{group.members.length} 人</p>
+            </div>
+            <p class="team__blurb">{group.blurb}</p>
+            <ul class="team__members" role="list">
+              {group.members.map((member) => {
+                const photo = photoOf(member);
+                return (
+                  <li class="crew">
+                    {photo ? (
+                      <>
+                        <Image
+                          class="crew__photo"
+                          src={photo}
+                          alt=""
+                          widths={[160, 320]}
+                          sizes="(min-width: 48rem) 6.5rem, 22vw"
+                          format="webp"
+                          loading="lazy"
+                        />
+                        <p class="crew__label">{member}</p>
+                      </>
+                    ) : (
+                      <p class="crew__plate">
+                        <span>{member}</span>
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="team__note">
+      {withPhoto} 人有提供頭像，其餘以名牌代替。{crossGroupMembers.join('、')}
+      跨組，名單在兩個組別各列一次。
+    </p>
   </div>
 </BaseLayout>
 
 <style>
-  .team-page :global(.team-page__empty) {
+  .team__index ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding-bottom: var(--space-5);
+  }
+
+  .team__index a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: 0.3rem 0.6rem;
+    border: var(--rule-hair) solid var(--color-ink);
+    border-radius: var(--radius-chip);
+    background: var(--color-white);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .team__index a:hover,
+  .team__index a:focus-visible {
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .team__index-count {
+    color: var(--color-ink-soft);
+    font-family: var(--font-sign);
+    font-weight: var(--weight-sign-heavy);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .team__index a:hover .team__index-count,
+  .team__index a:focus-visible .team__index-count {
+    color: inherit;
+  }
+
+  .team__groups {
+    border-top: var(--rule-heavy) solid var(--color-ink);
+  }
+
+  .team__group {
+    padding-block: var(--space-5);
+    scroll-margin-top: var(--space-5);
+    border-bottom: var(--rule-hair) solid var(--color-ink);
+  }
+
+  .team__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .team__name {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    letter-spacing: 0.06em;
+  }
+
+  .team__en,
+  .team__count {
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+  }
+
+  .team__en {
+    font-family: var(--font-sign);
+    font-weight: var(--weight-sign);
+  }
+
+  .team__blurb {
+    max-width: var(--measure);
+    margin-bottom: var(--space-4);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  .team__members {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: var(--space-2);
+  }
+
+  .crew {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    aspect-ratio: 1 / 1.26;
+    border: var(--rule-hair) solid var(--color-ink);
+    background: var(--color-white);
+    overflow: hidden;
+  }
+
+  .crew__photo {
+    display: block;
     width: 100%;
-    max-width: 44rem;
-    margin-inline: auto;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+    filter: grayscale(1);
+  }
+
+  .crew__label,
+  .crew__plate {
+    display: grid;
+    place-items: center;
+    min-height: 1.6rem;
+    padding: 0 var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.02em;
+    text-align: center;
+    line-height: var(--leading-snug);
+  }
+
+  .crew__label {
+    border-top: var(--rule-hair) solid var(--color-ink);
+  }
+
+  /* 沒有頭像的人：整張卡換成名牌，不重複寫名字。 */
+  .crew__plate {
+    grid-row: 1 / -1;
+    background: var(--color-paper-deep);
+    font-weight: var(--weight-black);
+    letter-spacing: 0.04em;
+  }
+
+  .team__note {
+    margin-top: var(--space-4);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 47.99rem) {
+    .team__group {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-3);
+    }
+
+    .team__head {
+      gap: 0 var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+
+    .team__members {
+      grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    }
   }
 </style>

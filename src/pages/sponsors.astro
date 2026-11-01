@@ -41,8 +41,16 @@ import { site } from '../data/site';
         rows={[
           { label: '級距與權益', value: null },
           { label: '攤位與展示', value: null },
-          { label: '廠商閃電講', value: null },
-          { label: '聯絡窗口', value: site.contactEmail },
+          {
+            label: '贊助票',
+            value: '黃金 1,000／白金 3,000／鑽石 5,000',
+            note: '憑票券於報到處領取 QRACON 紀念品，購票在 KKTIX。',
+          },
+          {
+            label: '聯絡窗口',
+            value: site.contactEmail,
+            href: site.contactEmail ? `mailto:${site.contactEmail}` : undefined,
+          },
         ]}
       />
     </section>

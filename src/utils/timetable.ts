@@ -1,5 +1,6 @@
 import { sessions } from '../data/sessions';
 import { rooms, roomIndex, roomById } from '../data/rooms';
+import { site } from '../data/site';
 import { minutesOf, toMinutes } from './time';
 import type { Session } from '../types/agenda';
 
@@ -45,4 +46,5 @@ export const timeMarkers = Array.from(
 );
 export const formatMinutes = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
-export const eventDateTime = (minutes: number) => `2026-12-05T${formatMinutes(minutes)}:00+08:00`;
+export const eventDateTime = (minutes: number) =>
+  `${site.date}T${formatMinutes(minutes)}:00+08:00`;

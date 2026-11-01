@@ -1,7 +1,8 @@
 import { setFlap } from '../flap';
+import { site } from '../../data/site';
 import { reducedMotion, ms } from './motion';
 
-const EVENT_DATE = '2026-12-05';
+const EVENT_DATE = site.date;
 const TIME_ZONE = 'Asia/Taipei';
 const SOON_MINUTES = 30;
 

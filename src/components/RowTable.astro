@@ -5,6 +5,7 @@ export interface Row {
   label: string;
   value: string | null;
   note?: string;
+  href?: string;
   stamp?: string;
 }
 
@@ -36,7 +37,9 @@ const { rows, caption, headings, class: className } = Astro.props;
         <tr>
           <th scope="row">{row.label}</th>
           <td>
-            {row.value ?? <Stamp label={row.stamp ?? '待公布'} tilt={false} />}
+            {row.value == null && <Stamp label={row.stamp ?? '待公布'} tilt={false} />}
+            {row.value != null &&
+              (row.href ? <a href={row.href}>{row.value}</a> : <span>{row.value}</span>)}
             {row.note && <span class="row-table__note">{row.note}</span>}
           </td>
         </tr>

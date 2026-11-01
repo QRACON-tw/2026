@@ -9,6 +9,7 @@ import FlapText from '../components/FlapText.astro';
 import StationSign from '../components/StationSign.astro';
 import wordmark from '../assets/brand/qracon-wordmark.png';
 import { site } from '../data/site';
+import { ticketGroups } from '../data/tickets';
 import { sessions, isListed } from '../data/sessions';
 import { roomById } from '../data/rooms';
 import { hhmm, minutesOf, toMinutes } from '../utils/time';
@@ -129,16 +130,32 @@ const serial = String(site.edition).padStart(4, '0');
           </div>
           <div>
             <dt>票價</dt>
-            <dd>{site.registration.price ?? <Stamp label="待公布" tilt={false} />}</dd>
+            <dd>
+              {
+                site.registration.price ? (
+                  <>
+                    {site.registration.price}
+                    <span class="tk-unit">起</span>
+                  </>
+                ) : (
+                  <Stamp label="待公布" tilt={false} />
+                )
+              }
+            </dd>
           </div>
         </dl>
         <div class="tk-actions">
           {registrationOpen ? (
-            <Button href={site.registration.url ?? undefined} icon="arrow-up-right">
+            <Button
+              href={site.registration.url ?? undefined}
+              icon="arrow-up-right"
+              target="_blank"
+              rel="noopener"
+            >
               報名取票
             </Button>
           ) : (
-            <span class="tk-status">報名即將開放</span>
+            <span class="tk-status">報名資訊待公布</span>
           )}
           <Button href="/agenda/" variant={registrationOpen ? 'line' : 'ink'} icon="arrow-right">
             看議程草案
@@ -165,6 +182,7 @@ const serial = String(site.edition).padStart(4, '0');
       <div class="about__theme">
         <span class="about__theme-label">QRACON 2026 / THEME</span>
         <p class="about__theme-title">{site.theme.title ?? '年度主題'}</p>
+        {site.theme.tagline && <p class="about__theme-tagline">{site.theme.tagline}</p>}
         {!site.theme.title && (
           <Stamp label="待公布" size="lg" placement="corner" appearance="paper" />
         )}
@@ -223,6 +241,68 @@ const serial = String(site.edition).padStart(4, '0');
           </Button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="fare wrap" aria-labelledby="fare-title">
+    <div class="fare__head">
+      <p class="fare__eyebrow">QRACON 2026 / FARE</p>
+      <h2 class="section-title" id="fare-title">票種與票價</h2>
+      <p class="fare__lede">
+        線上購票在 KKTIX。學校或班級團體報名免報名費，來信
+        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+        申請。
+      </p>
+    </div>
+
+    <table class="fare__table">
+      <caption class="visually-hidden">QRACON 2026 票種與票價，單位為新臺幣</caption>
+      <colgroup>
+        <col class="fare__col-name" />
+        <col />
+        <col class="fare__col-price" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">票種</th>
+          <th scope="col">適用</th>
+          <th scope="col">票價</th>
+        </tr>
+      </thead>
+      {
+        ticketGroups.map((group) => (
+          <tbody>
+            <tr class="fare__group">
+              <th scope="colgroup" colspan="3">
+                <span class="fare__group-name">{group.name}</span>
+                {group.note && <span class="fare__group-note">{group.note}</span>}
+              </th>
+            </tr>
+            {group.rows.map((row) => (
+              <tr>
+                <th scope="row">{row.name}</th>
+                <td class="fare__note">{row.note}</td>
+                <td class="fare__price">
+                  <span class="fare__currency">NT$</span>
+                  <span class="fare__amount">{row.price.toLocaleString('en-US')}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        ))
+      }
+    </table>
+
+    <div class="fare__foot">
+      <p>售票期間、名額與現場票是否開放，以 KKTIX 活動頁為準。</p>
+      <Button
+        href={site.registration.url ?? undefined}
+        icon="arrow-up-right"
+        target="_blank"
+        rel="noopener"
+      >
+        到 KKTIX 報名
+      </Button>
     </div>
   </section>
 
@@ -407,6 +487,14 @@ const serial = String(site.edition).padStart(4, '0');
     font-family: var(--font-sans);
   }
 
+  .tk-unit {
+    margin-left: 0.18em;
+    font-family: var(--font-sans);
+    font-size: 0.6em;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.04em;
+  }
+
   .tk-actions {
     display: flex;
     flex-wrap: wrap;
@@ -422,9 +510,139 @@ const serial = String(site.edition).padStart(4, '0');
   }
 
   .about,
+  .fare,
   .venue,
   .partners {
     padding-top: var(--space-10);
+  }
+
+  .fare__head {
+    display: grid;
+    gap: var(--space-3);
+    max-width: var(--measure);
+    margin-bottom: var(--space-6);
+  }
+
+  .fare__eyebrow {
+    color: var(--color-ink-soft);
+    font-family: var(--font-sign);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-sign);
+    letter-spacing: 0.18em;
+  }
+
+  .fare__lede a {
+    text-decoration-thickness: var(--rule-mid);
+    text-underline-offset: 0.2em;
+  }
+
+  .fare__table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: var(--rule-heavy) solid var(--color-ink);
+  }
+
+  .fare__col-name {
+    width: 26%;
+  }
+
+  .fare__col-price {
+    width: 14%;
+  }
+
+  .fare__table thead th {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: var(--rule-thin) solid var(--color-ink);
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.14em;
+    text-align: left;
+  }
+
+  .fare__table thead th:last-child {
+    text-align: right;
+  }
+
+  .fare__group th {
+    padding: var(--space-6) var(--space-3) var(--space-2);
+    border-bottom: var(--rule-hair) solid var(--color-ink);
+    text-align: left;
+  }
+
+  .fare__table tbody + tbody .fare__group th {
+    border-top: var(--rule-mid) solid var(--color-ink);
+  }
+
+  .fare__group-name {
+    font-size: var(--text-md);
+    font-weight: var(--weight-black);
+    letter-spacing: 0.18em;
+  }
+
+  .fare__group-note {
+    margin-left: var(--space-3);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+    letter-spacing: 0.02em;
+  }
+
+  .fare__table tbody th,
+  .fare__table tbody td {
+    padding: var(--space-3);
+    text-align: left;
+    vertical-align: baseline;
+  }
+
+  .fare__table tbody th {
+    border-bottom: var(--rule-hair) solid var(--color-rule-fine);
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  .fare__note {
+    border-bottom: var(--rule-hair) solid var(--color-rule-fine);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  .fare__price {
+    text-align: right;
+  }
+
+  .fare__table tbody td.fare__price {
+    border-bottom: var(--rule-hair) solid var(--color-rule-fine);
+    font-family: var(--font-sign);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .fare__currency {
+    margin-right: 0.3em;
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+  }
+
+  .fare__amount {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-sign-heavy);
+  }
+
+  .fare__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+
+  .fare__foot p {
+    max-width: var(--measure);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
   }
 
   .about {
@@ -817,6 +1035,7 @@ const serial = String(site.edition).padStart(4, '0');
   .about__theme {
     position: relative;
     display: block;
+    max-width: 22rem;
     padding: 1.5rem;
     margin-block: 2rem;
     border: 1.5px solid var(--color-ink);
@@ -835,6 +1054,13 @@ const serial = String(site.edition).padStart(4, '0');
     font-size: clamp(1.3rem, 2.2vw, 1.8rem);
     font-weight: var(--weight-black);
     line-height: 1.5;
+  }
+  .about__theme-tagline {
+    margin-top: var(--space-1);
+    color: var(--color-ink-soft);
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.12em;
   }
   .departures__eyebrow {
     font-family: var(--font-sign);
@@ -896,6 +1122,26 @@ const serial = String(site.edition).padStart(4, '0');
     }
     .tk-issuer {
       font-size: 0.7rem;
+    }
+    .fare__table tbody th,
+    .fare__table tbody td {
+      padding: var(--space-2) var(--space-1);
+    }
+    .fare__table tbody th {
+      font-size: var(--text-sm);
+    }
+    .fare__col-name {
+      width: 44%;
+    }
+    .fare__col-price {
+      width: 24%;
+    }
+    .fare__note {
+      font-size: var(--text-xs);
+    }
+    .fare__group-note {
+      display: block;
+      margin: var(--space-1) 0 0;
     }
     .board__place {
       font-size: 0.75rem;

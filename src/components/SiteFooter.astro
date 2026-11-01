@@ -64,6 +64,23 @@ const links = nav.filter((item) => item.href !== '/');
           }
         </dd>
       </div>
+      {
+        site.social.length > 0 && (
+          <div>
+            <dt>社群</dt>
+            <dd>
+              {site.social.map((item, i) => (
+                <>
+                  {i > 0 && '、'}
+                  <a href={item.url} target="_blank" rel="noopener">
+                    {item.label}
+                  </a>
+                </>
+              ))}
+            </dd>
+          </div>
+        )
+      }
     </dl>
 
   </div>

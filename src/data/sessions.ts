@@ -1,6 +1,7 @@
 import type { Session, SessionType } from '../types/agenda';
+import { site } from './site';
 
-const DAY = '2026-12-05';
+const DAY = site.date;
 const at = (hhmm: string) => `${DAY}T${hhmm}:00+08:00`;
 
 type Draft = Omit<Session, 'start' | 'end' | 'speakerIds' | 'tags'> & {
