@@ -100,7 +100,7 @@ public/
 
 ## 待決事項
 
-- 報名平台（KKTIX / Accupass / 自建表單）——影響 CTA 連結與是否需要 embed。
+- ~~報名平台~~ 已定 KKTIX（外站連結，不需 embed）。
 - 是否需要中英雙語。若需要，**必須在 P2 骨架階段就導入 i18n**，
   後補的成本是重寫所有樣板（SITCON 就卡在這裡）。
 - 網域（`qracon.tw`? 沿用 `qracon.entangletech.tw`?）。
