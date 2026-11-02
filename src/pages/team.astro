@@ -2,13 +2,9 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
-import { teamGroups, teamHeadcount, crossGroupMembers, photoOf } from '../data/team';
+import { teamGroups, teamHeadcount, photoOf } from '../data/team';
 import { buildBreadcrumbStructuredData } from '../utils/seo';
 
-const withPhoto = teamGroups
-  .flatMap((group) => group.members)
-  .filter((name, i, all) => all.indexOf(name) === i)
-  .filter((name) => photoOf(name)).length;
 const breadcrumbs = [
   { label: '首頁', href: '/' },
   { label: '籌備團隊', href: '/team/' },
@@ -87,10 +83,6 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       }
     </ol>
 
-    <p class="team__note">
-      {withPhoto} 人有提供頭像，其餘以名牌代替。{crossGroupMembers.join('、')}
-      跨組，名單在兩個組別各列一次。
-    </p>
   </div>
 </BaseLayout>
 
@@ -236,12 +228,6 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     background: var(--color-paper-deep);
     font-weight: var(--weight-black);
     letter-spacing: 0.04em;
-  }
-
-  .team__note {
-    margin-top: var(--space-4);
-    color: var(--color-ink-soft);
-    font-size: var(--text-sm);
   }
 
   @media (max-width: 47.99rem) {

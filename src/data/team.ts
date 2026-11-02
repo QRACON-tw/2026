@@ -47,7 +47,7 @@ export const teamGroups: TeamGroup[] = [
     name: '設計組',
     en: 'DESIGN',
     blurb: '主視覺、網站與現場輸出物的視覺設計。',
-    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱'],
+    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺閎'],
   },
   {
     id: 'program',
@@ -80,15 +80,8 @@ export const teamGroups: TeamGroup[] = [
       '林孟詮',
       '曾慶語',
       '蘇奇彬',
-      '黃鈺閎',
     ],
   },
 ];
 
 export const teamHeadcount = new Set(teamGroups.flatMap((group) => group.members)).size;
-
-/** 出現在兩個以上組別的人，名單會在頁面上重複列出，頁尾要註明。 */
-export const crossGroupMembers = teamGroups
-  .flatMap((group) => group.members)
-  .filter((name, i, all) => all.indexOf(name) !== i)
-  .filter((name, i, all) => all.indexOf(name) === i);
