@@ -6,11 +6,11 @@ export const rooms: Room[] = [
   {
     id: 'multi12',
     name: '多功能會議室（1）+（2）',
-    short: '多功能（1）+（2）',
+    short: '多功能 1+2',
     kind: 'meeting',
     capacity: 100,
   },
-  { id: 'multi3', name: '多功能會議室（3）', short: '多功能（3）', kind: 'meeting', capacity: 50 },
+  { id: 'multi3', name: '多功能會議室（3）', short: '多功能 3', kind: 'meeting', capacity: 50 },
   { id: 'room1', name: '第一會議室', short: '第一會議室', kind: 'meeting', capacity: 27 },
 ];
 

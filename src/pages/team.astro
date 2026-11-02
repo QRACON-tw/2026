@@ -3,18 +3,30 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import { teamGroups, teamHeadcount, crossGroupMembers, photoOf } from '../data/team';
+import { buildBreadcrumbStructuredData } from '../utils/seo';
 
 const withPhoto = teamGroups
   .flatMap((group) => group.members)
   .filter((name, i, all) => all.indexOf(name) === i)
   .filter((name) => photoOf(name)).length;
+const breadcrumbs = [
+  { label: '首頁', href: '/' },
+  { label: '籌備團隊', href: '/team/' },
+];
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 ---
 
 <BaseLayout
   title="籌備團隊"
-  description="QRACON 2026 籌備團隊名單：召組、行銷組、財務組、設計組、議程組、攝影組與機動組，共 7 組 34 人。"
+  description={`QRACON 2026 籌備團隊名單：召組、行銷組、財務組、設計組、議程組、攝影組與機動組，共 ${teamGroups.length} 組 ${teamHeadcount} 人。`}
+  structuredData={structuredData}
 >
-  <PageHead title="籌備團隊" status={`${teamHeadcount} 人`} />
+  <PageHead
+    title="籌備團隊"
+    status={`${teamHeadcount} 人`}
+    breadcrumbs={breadcrumbs}
+  />
 
   <nav class="wrap team__index" aria-label="組別">
     <ul role="list">

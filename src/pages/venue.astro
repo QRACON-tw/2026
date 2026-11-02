@@ -9,6 +9,7 @@ import { rooms } from '../data/rooms';
 import { sessions, isListed } from '../data/sessions';
 import { minutesOf } from '../utils/time';
 import { site } from '../data/site';
+import { buildBreadcrumbStructuredData } from '../utils/seo';
 import type { RoomId } from '../types/agenda';
 
 const usage = (id: RoomId) => {
@@ -29,15 +30,24 @@ const modes = [
   { label: '開車', value: null },
   { label: '接駁車', value: null },
 ];
+const breadcrumbs = [
+  { label: '首頁', href: '/' },
+  { label: '會場與交通', href: '/venue/' },
+];
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 ---
 
 <BaseLayout
   title="會場與交通"
-  description={`QRACON 2026 在${site.venue.org}${site.venue.name}（${site.venue.city}）舉行。場地、平面圖與交通方式。`}
+  description={`QRACON 2026 在${site.venue.org}${site.venue.name}（${site.venue.city}）舉行。查看會場空間、活動平面圖與前往臺南會場的交通資訊。`}
+  noindex
+  structuredData={structuredData}
 >
   <PageHead
     title="會場與交通"
     lede={`${site.venue.org} ${site.venue.name}（${site.venue.city}）`}
+    breadcrumbs={breadcrumbs}
   />
 
   <div class="wrap venue-page">

@@ -8,6 +8,23 @@ export function initMobileControls() {
   if (!controls || !agenda || !toggle || !jump) return;
   const mobile = window.matchMedia('(max-width: 71.99rem)');
   const phases = [...document.querySelectorAll<HTMLElement>('[data-phase-start]')];
+  const sessionCards = [...document.querySelectorAll<HTMLElement>('[data-session]')];
+  const targetForPhase = (phase: HTMLElement) => {
+    if (phase.getClientRects().length) return phase;
+    const from = Number(phase.dataset.phaseStart);
+    const to = Number(phase.dataset.phaseEnd);
+    const candidates = sessionCards.filter((session) => !session.hasAttribute('data-dim'));
+    return (
+      candidates.find((session) => {
+        const start = Number(session.dataset.start);
+        return start >= from && start < to;
+      }) ??
+      candidates.find(
+        (session) =>
+          Number(session.dataset.start) < to && Number(session.dataset.end) > from,
+      )
+    );
+  };
   const setExpanded = (open: boolean) => {
     controls.toggleAttribute('data-filters-open', open);
     toggle.setAttribute('aria-expanded', String(open));
@@ -35,10 +52,12 @@ export function initMobileControls() {
   jump.addEventListener('change', () => {
     const phase = document.getElementById(jump.value);
     if (!phase || phase.hasAttribute('data-empty')) return;
+    const target = targetForPhase(phase);
+    if (!target) return;
     setExpanded(false);
     measure();
     const top =
-      window.scrollY + phase.getBoundingClientRect().top - controls.getBoundingClientRect().height;
+      window.scrollY + target.getBoundingClientRect().top - controls.getBoundingClientRect().height;
     window.scrollTo({ top, behavior: reducedMotion() ? 'instant' : 'smooth' });
     const url = new URL(window.location.href);
     url.hash = phase.id;
@@ -50,8 +69,14 @@ export function initMobileControls() {
     if (!mobile.matches || controls.hasAttribute('data-filters-open')) return;
     const edge = controls.getBoundingClientRect().height + 24;
     const visible = phases.filter((phase) => !phase.hasAttribute('data-empty'));
-    const active = visible.findLast((phase) => phase.getBoundingClientRect().top <= edge);
-    jump.value = active?.id ?? '';
+    const active = visible
+      .map((phase) => ({ phase, target: targetForPhase(phase) }))
+      .filter(
+        (entry): entry is { phase: HTMLElement; target: HTMLElement } =>
+          entry.target !== undefined,
+      )
+      .findLast((entry) => entry.target.getBoundingClientRect().top <= edge);
+    jump.value = active?.phase.id ?? '';
   };
   window.addEventListener(
     'scroll',

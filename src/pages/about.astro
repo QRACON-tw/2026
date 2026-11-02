@@ -5,6 +5,7 @@ import RowTable from '../components/RowTable.astro';
 import type { Row } from '../components/RowTable.astro';
 import Stamp from '../components/Stamp.astro';
 import { site } from '../data/site';
+import { buildBreadcrumbStructuredData } from '../utils/seo';
 
 const orgRows: Row[] = [
   { label: '指導單位', value: site.advisor },
@@ -37,12 +38,23 @@ const editions = [
     current: false,
   },
 ];
+const breadcrumbs = [
+  { label: '首頁', href: '/' },
+  { label: '關於 QRACON', href: '/about/' },
+];
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 ---
 
-<BaseLayout title="關於" description={site.description}>
+<BaseLayout
+  title="關於 QRACON"
+  description={`認識 QRACON：由學生主導的量子科技年會。2026 年以「${site.theme.title}：${site.theme.tagline}」為主題，第四屆首度移師${site.venue.city}。`}
+  structuredData={structuredData}
+>
   <PageHead
     title="關於 QRACON"
     lede={`QRACON（${site.nameEn}）是由學生主導的量子科技年會，今年邁入第四屆。`}
+    breadcrumbs={breadcrumbs}
   />
 
   <div class="wrap about-page">

@@ -32,16 +32,16 @@ import SessionContent from './SessionContent.astro';
     max-height: calc(100svh - 2rem);
     margin: auto;
     padding: 0;
-    border: 2px solid var(--color-ink);
-    border-radius: 8px;
+    border: var(--rule-mid) solid var(--color-ink);
+    border-radius: var(--radius-dialog);
     background: var(--color-white);
     color: var(--color-ink);
     overflow: auto;
     overscroll-behavior: contain;
-    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.25);
+    box-shadow: var(--shadow-dialog);
   }
   .session-dialog::backdrop {
-    background: rgb(0 0 0 / 0.55);
+    background: var(--color-backdrop);
     backdrop-filter: blur(4px);
   }
   .session-dialog__bar {
@@ -52,7 +52,7 @@ import SessionContent from './SessionContent.astro';
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.5rem 1.5rem;
+    padding: var(--space-2) var(--space-5);
     border-bottom: 1px solid var(--color-ink);
     background: var(--color-white);
     font-size: 0.75rem;

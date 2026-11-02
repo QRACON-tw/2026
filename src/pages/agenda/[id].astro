@@ -4,10 +4,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SessionContent from '../../components/agenda/SessionContent.astro';
 import Icon from '../../components/Icon.astro';
 import Words from '../../components/Words.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { sessions, isListed } from '../../data/sessions';
 import { roomById } from '../../data/rooms';
 import { site } from '../../data/site';
 import { hhmm, minutesOf } from '../../utils/time';
+import {
+  buildBreadcrumbStructuredData,
+  buildSessionStructuredData,
+  isIndexableSession,
+} from '../../utils/seo';
 import type { Session } from '../../types/agenda';
 
 export const getStaticPaths = (() =>
@@ -28,18 +34,41 @@ const roomNames = session.rooms === 'all' ? ['全體'] : session.rooms.map((r) =
 const sameRoom =
   session.rooms === 'all'
     ? sessions.filter((s) => s.rooms === 'all' && isListed(s))
-    : sessions.filter((s) => isListed(s) && s.rooms !== 'all' && s.rooms[0] === session.rooms[0]);
+    : session.rooms.length === 1
+      ? sessions.filter(
+          (s) =>
+            isListed(s) &&
+            s.rooms !== 'all' &&
+            s.rooms.length === 1 &&
+            s.rooms[0] === session.rooms[0],
+        )
+      : [];
 sameRoom.sort((a, b) => minutesOf(a.start) - minutesOf(b.start));
 const index = sameRoom.findIndex((s) => s.id === session.id);
 const prev = index > 0 ? sameRoom[index - 1] : undefined;
 const next = index >= 0 && index < sameRoom.length - 1 ? sameRoom[index + 1] : undefined;
+const breadcrumbs = [
+  { label: '首頁', href: '/' },
+  { label: '議程', href: '/agenda/' },
+  { label: session.title, href: `/agenda/${session.id}/` },
+];
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const structuredData = [
+  ...(isIndexableSession(session) ? [buildSessionStructuredData(session, siteUrl)] : []),
+  buildBreadcrumbStructuredData(breadcrumbs, siteUrl),
+];
 ---
 
 <BaseLayout
   title={session.title}
   description={`${session.title}｜QRACON 2026 議程草案，${site.dateLabel} ${hhmm(session.start)}–${hhmm(session.end)}，${roomNames.join('、')}。`}
+  noindex={!isIndexableSession(session)}
+  structuredData={structuredData}
 >
   <div class="wrap detail">
+    <div class="detail__breadcrumbs">
+      <Breadcrumbs items={breadcrumbs} />
+    </div>
     <a class="back" href="/agenda/">
       <Icon name="arrow-left" size={18} />
       <span>回時刻表</span>
@@ -109,6 +138,11 @@ const next = index >= 0 && index < sameRoom.length - 1 ? sameRoom[index + 1] : u
     min-height: 2.75rem;
     font-weight: var(--weight-bold);
     text-decoration: none;
+  }
+
+  .detail__breadcrumbs {
+    grid-column: 1 / -1;
+    margin-bottom: calc(var(--space-5) * -1);
   }
 
   .back:hover span {

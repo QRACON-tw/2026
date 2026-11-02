@@ -183,7 +183,7 @@ export const sessions: Session[] = drafts.map(({ from, to, ...rest }) => ({
 
 export const typeLabels: Record<SessionType, string> = {
   plenary: '典禮',
-  keynote: '主題',
+  keynote: '主題演講',
   talk: '演講',
   rerun: '重播',
   lightning: '閃電講',

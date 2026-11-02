@@ -13,6 +13,7 @@ import { ticketGroups, lowestFare } from '../data/tickets';
 import { sessions, isListed } from '../data/sessions';
 import { roomById } from '../data/rooms';
 import { hhmm, minutesOf, toMinutes } from '../utils/time';
+import { buildEventStructuredData } from '../utils/seo';
 import type { RoomId } from '../types/agenda';
 
 const registrationOpen = site.registration.status === 'open' && site.registration.url;
@@ -68,9 +69,11 @@ const board = [
 ];
 
 const serial = String(site.edition).padStart(4, '0');
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const structuredData = [buildEventStructuredData(siteUrl)];
 ---
 
-<BaseLayout>
+<BaseLayout structuredData={structuredData}>
   <section class="hero" data-hero aria-labelledby="hero-title">
     <div class="hero__content wrap">
       <h1 class="hero__title" id="hero-title">

@@ -11,6 +11,14 @@
   --color-on-ink-rule: #4d4d4d;
   --color-ink-raised: #262626;
 
+  /* Filtered-out timetable content. Kept above 4.5:1 on its own surface. */
+  --color-dim-surface: #f3f3f3;
+  --color-dim-surface-strong: #e3e3e3;
+  --color-dim-ink: #5f5f5f;
+  --color-dim-rule: #c4c4c4;
+  --color-backdrop: rgb(0 0 0 / 0.55);
+  --shadow-dialog: 0 1.5rem 5rem rgb(0 0 0 / 0.25);
+
   --color-focus: var(--color-ink);
   --color-selection-bg: var(--color-rule-fine);
   --color-selection-fg: var(--color-ink);
@@ -78,6 +86,7 @@
 
   --radius-tile: 3px;
   --radius-chip: 4px;
+  --radius-dialog: 8px;
   --radius-ticket: 12px;
   --radius-ticket-inner: 6px;
   --radius-pill: 999px;

@@ -1,0 +1,63 @@
+---
+import type { BreadcrumbItem } from '../utils/seo';
+
+interface Props {
+  items: BreadcrumbItem[];
+  label?: string;
+  class?: string;
+}
+
+const { items, label = '麵包屑', class: className } = Astro.props;
+---
+
+<nav class:list={['breadcrumbs', className]} aria-label={label}>
+  <ol role="list">
+    {
+      items.map((item, index) => (
+        <li>
+          {index === items.length - 1 ? (
+            <span aria-current="page">{item.label}</span>
+          ) : (
+            <a href={item.href}>{item.label}</a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    margin-bottom: var(--space-4);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    margin: 0;
+  }
+
+  .breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .breadcrumbs li:not(:last-child)::after {
+    content: '／';
+    color: var(--color-rule-fine);
+  }
+
+  .breadcrumbs a {
+    color: inherit;
+    font-weight: var(--weight-bold);
+    text-underline-offset: 0.2em;
+  }
+
+  .breadcrumbs [aria-current='page'] {
+    color: var(--color-ink);
+  }
+</style>

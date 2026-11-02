@@ -4,20 +4,53 @@ import { Font } from 'astro:assets';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { site } from '../data/site';
+import {
+  buildSiteStructuredData,
+  type StructuredData,
+} from '../utils/seo';
 
 interface Props {
-  
   title?: string;
   description?: string;
+  canonicalPath?: string;
+  canonical?: boolean;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  structuredData?: StructuredData[];
 }
 
-const { title, description = site.description } = Astro.props;
+const {
+  title,
+  description = site.description,
+  canonicalPath = Astro.url.pathname,
+  canonical: includeCanonical = true,
+  image = '/og-image.png',
+  imageAlt = `${site.name} ${site.nameZh}活動視覺，${site.dateLabel} 在${site.venue.org}${site.venue.name}`,
+  noindex = false,
+  structuredData = [],
+} = Astro.props;
+
 const fullTitle = title
-  ? `${title}｜${site.name} ${site.nameZh}`
+  ? `${title}｜${site.name}`
   : `${site.name} ${site.nameZh}｜${site.dateLabel} ${site.venue.org}${site.venue.name}`;
 
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-const ogImage = Astro.site ? new URL('/og-image.png', Astro.site).href : '/og-image.png';
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const canonicalUrl = new URL(canonicalPath, siteUrl);
+canonicalUrl.search = '';
+canonicalUrl.hash = '';
+if (!canonicalUrl.pathname.endsWith('/')) canonicalUrl.pathname += '/';
+
+const canonical = includeCanonical ? canonicalUrl.href : undefined;
+const ogImage = new URL(image, siteUrl).href;
+const robots = noindex
+  ? 'noindex, follow'
+  : 'index, follow, max-image-preview:large';
+const structuredGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [...buildSiteStructuredData(siteUrl), ...structuredData],
+};
+const structuredJson = JSON.stringify(structuredGraph).replaceAll('<', '\\u003c');
 ---
 
 <!doctype html>
@@ -30,7 +63,9 @@ const ogImage = Astro.site ? new URL('/og-image.png', Astro.site).href : '/og-im
     </script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="sitemap" href="/sitemap.xml" type="application/xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#d9d9d9" />
     <meta property="og:type" content="website" />
@@ -41,11 +76,17 @@ const ogImage = Astro.site ? new URL('/og-image.png', Astro.site).href : '/og-im
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta property="og:locale" content="zh_TW" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <Font cssVariable="--font-barlow-condensed" preload />
     <Font cssVariable="--font-noto-sans-tc" />
     <slot name="head" />
+    <script is:inline type="application/ld+json" set:html={structuredJson} />
   </head>
   <body>
     <a class="skip-link" href="#main">跳到主要內容</a>

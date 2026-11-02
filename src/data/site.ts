@@ -17,6 +17,7 @@ interface SiteInfo {
   
   rocDate: string;
   checkIn: string;
+  eventStart: string;
   timeZone: string;
   venue: { org: string; name: string; city: string; address: string | null };
   advisor: string;
@@ -40,6 +41,8 @@ export const site: SiteInfo = {
   weekdayEn: 'SUN',
   rocDate: '115.12.13',
   checkIn: '08:00',
+  // KKTIX 活動開始時間；08:00 是網站議程表的報到時間。
+  eventStart: '08:30',
   timeZone: 'Asia/Taipei',
   venue: {
     org: '中央研究院',

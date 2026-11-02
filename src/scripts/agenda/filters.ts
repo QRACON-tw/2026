@@ -46,6 +46,19 @@ export function initFilters(sessions: HTMLElement[]) {
       );
       phase.toggleAttribute('data-empty', empty);
       phase.toggleAttribute('data-first-phase', !empty && firstVisiblePhase);
+      const routeLink = document.querySelector<HTMLAnchorElement>(
+        `.phase-route a[href="#${phase.id}"]`,
+      );
+      routeLink?.closest('li')?.toggleAttribute('data-empty', empty);
+      if (routeLink) {
+        if (empty) {
+          routeLink.setAttribute('aria-disabled', 'true');
+          routeLink.setAttribute('tabindex', '-1');
+        } else {
+          routeLink.removeAttribute('aria-disabled');
+          routeLink.removeAttribute('tabindex');
+        }
+      }
       if (!empty) firstVisiblePhase = false;
       const option = document.querySelector<HTMLOptionElement>(
         `[data-phase-jump] option[value="${phase.id}"]`,
@@ -54,6 +67,13 @@ export function initFilters(sessions: HTMLElement[]) {
     }
     const empty = document.querySelector<HTMLElement>('[data-tt-empty]');
     if (empty) empty.hidden = shown > 0;
+    const emptyText = empty?.querySelector<HTMLElement>('[data-tt-empty-text]');
+    if (emptyText) {
+      emptyText.textContent =
+        onlyPunched && !types.size
+          ? '還沒有收藏場次。先清除篩選，再點場次上的虛線圈即可收藏。'
+          : '沒有符合條件的場次，試試其他類型或清除篩選。';
+    }
     const board = document.querySelector<HTMLElement>('[data-timetable-board]');
     if (board) board.hidden = shown === 0;
     const summary = tools
@@ -103,6 +123,14 @@ export function initFilters(sessions: HTMLElement[]) {
   };
   clearButton?.addEventListener('click', clear);
   document.querySelector('[data-filter-reset]')?.addEventListener('click', clear);
+  document.querySelector('.phase-route')?.addEventListener('click', (event) => {
+    if (
+      event.target instanceof Element &&
+      event.target.closest('a[aria-disabled="true"]')
+    ) {
+      event.preventDefault();
+    }
+  });
 
   initPunches((set) => {
     punched = set;

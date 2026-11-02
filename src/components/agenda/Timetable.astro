@@ -23,8 +23,9 @@ import Words from '../Words.astro';
   data-timetable-board
   style={`--room-count: ${rooms.length}; --row-template: ${rowTemplate}`}
 >
+  <h2 class="visually-hidden" id="timetable-title">完整議程</h2>
   <p class="visually-hidden" id="timetable-help">
-    左側為時間，右側場地可左右滑動。點選議程開啟詳情，虛線圈圈可收藏場次。
+    議程依開始時間排序並標示場地。點選議程開啟詳情，虛線圈圈可收藏場次。
   </p>
   <div class="tt-rail">
     <div class="tt-rail__head" aria-hidden="true">
@@ -49,7 +50,7 @@ import Words from '../Words.astro';
         data-phase-end={toMinutes(phase.to)}
         style={`--r0: ${gridRow(toMinutes(phase.from))}; --r1: ${gridRow(toMinutes(phase.to))}`}
       >
-        {phase.label}
+        <span class="tt__phase-label">{phase.label}</span>
       </h2>
     ))}
   </div>
@@ -58,7 +59,7 @@ import Words from '../Words.astro';
     data-room-track
     tabindex="0"
     role="region"
-    aria-label="各場地議程表，可左右滑動"
+    aria-labelledby="timetable-title"
     aria-describedby="timetable-help"
   >
     <div class="tt">
@@ -111,8 +112,13 @@ import Words from '../Words.astro';
           >
             {listed && !all && (
               <div class="s__head">
-                <p class="s__type">{typeLabels[session.type]}</p>
-                <p class="s__status" data-status hidden />
+                <p class="s__type">
+                  <span class="s__type-label">{typeLabels[session.type]}</span>
+                  <span class="s__status" data-status hidden />
+                  <span class="s__type-time">
+                    {hhmm(session.start)}–{hhmm(session.end)}
+                  </span>
+                </p>
                 {canBookmark(session) && <PunchToggle id={session.id} title={session.title} />}
               </div>
             )}
@@ -134,6 +140,7 @@ import Words from '../Words.astro';
               <span class="visually-hidden">到</span>
               <time datetime={session.end}>{hhmm(session.end)}</time>
             </p>
+            <p class="s__place">{sessionRoomLabel(session)}</p>
             {all && <p class="s__status" data-status hidden />}
           </article>
         );
@@ -205,13 +212,18 @@ import Words from '../Words.astro';
     align-items: center;
     margin: 0;
     padding-block: 0.75rem;
-    writing-mode: vertical-rl;
     font-size: var(--text-xs);
-    letter-spacing: 0.12em;
     background: var(--color-ink);
     color: var(--color-white);
     border-top: 1px solid var(--color-on-ink-rule);
     scroll-margin-top: calc(var(--agenda-controls-height, 0px) + 1rem);
+  }
+  /* Keep the heading box in normal writing mode so fragment navigation aligns
+     its top; only the label itself runs vertically. */
+  .tt__phase-label {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 0.12em;
   }
   .tt__phase[data-empty] {
     background: var(--color-paper-deep);
@@ -301,7 +313,28 @@ import Words from '../Words.astro';
     line-height: 1.4;
     color: var(--color-ink-soft);
   }
-  .s__head:has(.s__status:not([hidden])) .s__type {
+  .s__type {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .s__type-label {
+    flex: none;
+  }
+  .s__type-time {
+    flex: none;
+    font-family: var(--font-sign);
+    font-size: 0.75rem;
+    font-weight: var(--weight-sign);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .s:not(.s--short) .s__type-time {
+    display: none;
+  }
+  .s__head:has(.s__status:not([hidden])) .s__type-label {
     display: none;
   }
   .s :global(.punch) {
@@ -309,6 +342,13 @@ import Words from '../Words.astro';
     position: relative;
     z-index: 2;
     flex: none;
+  }
+  /* Keep the 24px punch visual but give it a 36×44px hit area. */
+  .s :global(.punch--mini)::after {
+    content: '';
+    position: absolute;
+    inset: -0.625rem -0.25rem;
+    border-radius: 50%;
   }
   .s__title {
     align-self: center;
@@ -360,6 +400,13 @@ import Words from '../Words.astro';
     font-size: var(--text-xs);
     font-weight: var(--weight-sign);
     line-height: 1.4;
+  }
+  .s__place {
+    display: none;
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
   }
   .s--short {
     grid-template-rows: auto minmax(0, 1fr);
@@ -446,6 +493,14 @@ import Words from '../Words.astro';
     padding: 0.1em 0.3em;
     justify-self: center;
   }
+  /* A 20/30-minute break cannot fit the three-row station layout. */
+  .s--break.s--short:not(.s--all) {
+    grid-template-rows: minmax(0, 1fr);
+    padding-block: 0.5rem;
+  }
+  .s--break.s--short:not(.s--all) .s__title {
+    grid-row: 1;
+  }
   .s--wide .s__head,
   .s--wide .s__title {
     position: sticky;
@@ -460,20 +515,20 @@ import Words from '../Words.astro';
     max-width: 100%;
   }
   .s[data-dim] {
-    background: #f3f3f3;
+    background: var(--color-dim-surface);
     background-image: none;
-    color: #929292;
-    border-color: #d0d0d0;
+    color: var(--color-dim-ink);
+    border-color: var(--color-dim-rule);
   }
-  .s[data-dim] :is(.s__type, .s__meta, .s__status) {
-    color: #929292;
+  .s[data-dim] :is(.s__type, .s__meta, .s__status, .s__place) {
+    color: var(--color-dim-ink);
   }
   .s[data-dim] :global(.punch) {
-    opacity: 0.4;
+    opacity: 0.55;
   }
   .s--all[data-dim] {
-    background: #e3e3e3;
-    color: #777;
+    background: var(--color-dim-surface-strong);
+    color: var(--color-dim-ink);
   }
   .s[data-hot],
   .s[data-state='now'] {
@@ -483,8 +538,8 @@ import Words from '../Words.astro';
     --color-focus: var(--color-white);
     --chad-bg: var(--color-ink);
   }
-  .s[data-hot] :is(.s__type, .s__meta, .s__status),
-  .s[data-state='now'] :is(.s__type, .s__meta, .s__status) {
+  .s[data-hot] :is(.s__type, .s__meta, .s__status, .s__place),
+  .s[data-state='now'] :is(.s__type, .s__meta, .s__status, .s__place) {
     color: var(--color-on-ink-soft);
   }
   .s--break[data-hot] .s__title :global(.words),
@@ -497,10 +552,53 @@ import Words from '../Words.astro';
   .s[data-state='now'] .s__meta {
     background-color: var(--color-ink);
   }
+  /* A filtered-out card stays quiet even when it is hovered or currently running. */
+  .s[data-dim][data-hot],
+  .s[data-dim][data-state='now'] {
+    background: var(--color-dim-surface);
+    background-image: none;
+    color: var(--color-dim-ink);
+    --color-focus: var(--color-ink);
+    --chad-bg: var(--color-dim-surface);
+  }
+  .s--all[data-dim][data-hot],
+  .s--all[data-dim][data-state='now'] {
+    background: var(--color-dim-surface-strong);
+  }
+  .s[data-dim][data-hot] :is(.s__type, .s__meta, .s__status, .s__place),
+  .s[data-dim][data-state='now'] :is(.s__type, .s__meta, .s__status, .s__place) {
+    color: var(--color-dim-ink);
+  }
+  .s[data-dim][data-hot] .s__title,
+  .s[data-dim][data-hot] .s__meta,
+  .s[data-dim][data-state='now'] .s__title,
+  .s[data-dim][data-state='now'] .s__meta {
+    background-color: transparent;
+  }
+  .s--break[data-dim][data-hot] .s__title :global(.words),
+  .s--break[data-dim][data-state='now'] .s__title :global(.words) {
+    background: var(--color-paper);
+  }
   .s[data-state='past'] {
-    color: var(--color-ink-muted);
+    color: var(--color-ink-soft);
+    border-color: var(--color-rule-fine);
+  }
+  .s[data-dim][data-state='past'] {
+    color: var(--color-dim-ink);
+    border-color: var(--color-dim-rule);
   }
   @media (min-width: 72rem) {
+    /* All five rooms fit at this width, so release the horizontal scroll
+       container and let the room labels stick while the page scrolls. */
+    .tt-scroll {
+      overflow: visible;
+    }
+    .tt__room {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      box-shadow: 0 1px 0 var(--color-ink);
+    }
     .s--long:not(.s--break) {
       grid-template-rows: 4.5rem minmax(0, 1fr) 4.5rem;
     }
@@ -570,16 +668,191 @@ import Words from '../Words.astro';
       align-self: start;
       padding-block: 1rem;
     }
+    /* A wide break spans several rooms; keep its label inside the visible
+       scrollport instead of centering it in the full multi-room cell. */
+    .s--break.s--wide .s__title {
+      justify-self: start;
+    }
+    .s--break.s--wide .s__meta {
+      position: sticky;
+      left: 0.5rem;
+      justify-self: start;
+      width: calc(100cqw - 1rem);
+      max-width: 100%;
+      background: var(--color-paper);
+    }
   }
   @media (max-width: 47.99rem) {
+    .timetable-board {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .tt-rail,
+    .tt__room,
+    .tt__rule {
+      display: none;
+    }
+    .tt-scroll {
+      overflow: visible;
+      container-type: normal;
+      border: 0;
+      scroll-snap-type: none;
+    }
     .tt {
-      --column-width: calc(100cqw - 1.5rem);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      width: 100%;
+      background: transparent;
     }
-    .s__title {
+    .s,
+    .s--short,
+    .s--long,
+    .s--break.s--short:not(.s--all) {
+      grid-column: auto;
+      grid-row: auto;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto auto;
+      gap: 0.35rem 0.75rem;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+      padding: 0.75rem;
+    }
+    .s__head {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+    .s__type-time {
+      display: none;
+    }
+    .s__title,
+    .s--short .s__title,
+    .s--long .s__title {
+      grid-column: 1;
+      grid-row: 2;
+      display: block;
+      align-self: start;
+      min-height: 0;
+      max-height: none;
+      padding: 0;
+      overflow: visible;
+      writing-mode: horizontal-tb;
+      text-orientation: mixed;
       font-size: 1rem;
+      letter-spacing: 0;
+      line-height: 1.45;
+      text-align: left;
+      -webkit-line-clamp: unset;
     }
-    .s--short .s__title {
-      font-size: 0.9375rem;
+    .s__meta,
+    .s--short .s__meta {
+      display: flex;
+      grid-column: 2;
+      grid-row: 2;
+      align-self: start;
+      justify-content: flex-end;
+      padding: 0;
+      background: transparent;
+      text-align: right;
+    }
+    .s__place {
+      display: block;
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+    .s--all {
+      grid-template-rows: auto auto;
+      padding: 0.75rem;
+      border: 1px solid var(--color-ink);
+    }
+    .s--all .s__title {
+      position: static;
+      grid-column: 1;
+      grid-row: 1;
+      justify-content: flex-start;
+      width: auto;
+      height: auto;
+      padding: 0;
+      font-size: 1rem;
+      letter-spacing: 0;
+      text-align: left;
+    }
+    .s--all .s__meta {
+      display: flex;
+      position: static;
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      justify-content: flex-end;
+      width: auto;
+      padding: 0;
+      background: transparent;
+    }
+    .s--all .s__place {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .s--all .s__status {
+      position: static;
+      grid-column: 2;
+      grid-row: 2;
+      justify-self: end;
+      align-self: end;
+      width: auto;
+      margin: 0;
+    }
+    .s--break:not(.s--all) {
+      grid-template-rows: auto auto;
+      gap: 0.25rem 0.75rem;
+      padding-block: 0.75rem;
+    }
+    .s--break:not(.s--all) .s__title {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+      text-align: left;
+    }
+    .s--break:not(.s--all) .s__title :global(.words) {
+      padding: 0;
+      background: transparent;
+    }
+    .s--break:not(.s--all) .s__meta {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      padding: 0;
+      background: transparent;
+    }
+    .s--break:not(.s--all) .s__place {
+      grid-row: 2;
+    }
+    .s--wide .s__head,
+    .s--wide .s__title,
+    .s--wide:not(.s--break) .s__meta,
+    .s--break.s--wide .s__meta {
+      position: static;
+      width: auto;
+      max-width: none;
+    }
+    .s--break.s--wide .s__title {
+      justify-self: start;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tt__phase.is-arriving {
+      animation: phase-arrive var(--dur-slow) var(--ease-out);
+    }
+    @keyframes phase-arrive {
+      0% {
+        box-shadow: inset 0 0 0 0 var(--color-white);
+      }
+      35% {
+        box-shadow: inset 0 0 0 4px var(--color-white);
+      }
+      100% {
+        box-shadow: inset 0 0 0 0 var(--color-white);
+      }
     }
   }
 </style>

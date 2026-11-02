@@ -3,10 +3,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import RowTable from '../components/RowTable.astro';
 import { site } from '../data/site';
+import { buildBreadcrumbStructuredData } from '../utils/seo';
+
+const breadcrumbs = [
+  { label: '首頁', href: '/' },
+  { label: '行為準則', href: '/coc/' },
+];
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 ---
 
-<BaseLayout title="行為準則" description="QRACON 2026 行為準則。">
-  <PageHead title="行為準則" status="原文待取得" />
+<BaseLayout
+  title="行為準則"
+  description="QRACON 2026 行為準則與活動現場回報管道。"
+  noindex
+  structuredData={structuredData}
+>
+  <PageHead title="行為準則" status="原文待取得" breadcrumbs={breadcrumbs} />
 
   <div class="wrap coc-page">
     <RowTable
