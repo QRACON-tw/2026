@@ -83,11 +83,11 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
             </p>
           </li>
         ))}
-        <li class="editions__row editions__row--todo">
+        <li class="editions__row editions__row--archived">
           <p class="editions__year">—</p>
           <p class="editions__label">第一、二屆</p>
           <p class="editions__place">
-            <Stamp label="資料待補" tilt={false} />
+            <Stamp label="歷屆紀錄整理中" tilt={false} />
           </p>
         </li>
       </ol>
@@ -161,7 +161,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     color: inherit;
   }
 
-  .editions__row--todo {
+  .editions__row--archived {
     color: var(--color-ink-soft);
   }
 

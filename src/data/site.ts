@@ -41,14 +41,12 @@ export const site: SiteInfo = {
   weekdayEn: 'SUN',
   rocDate: '115.12.13',
   checkIn: '08:00',
-  // KKTIX 活動開始時間；08:00 是網站議程表的報到時間。
   eventStart: '08:30',
   timeZone: 'Asia/Taipei',
   venue: {
     org: '中央研究院',
     name: '南部院區',
     city: '臺南',
-    // TODO(venue): 門牌地址待主辦團隊確認。
     address: null,
   },
   advisor: 'EntangleTech',
@@ -58,10 +56,8 @@ export const site: SiteInfo = {
     tagline: '量子冒險者',
   },
   registration: {
-    // 售票頁：KKTIX（2026-11-01 核對，已開賣）。
     status: 'open',
     url: 'https://sqcs.kktix.cc/events/qracon2026',
-    // 票種多於一種，這裡只放最低價；完整票種表見 src/data/tickets.ts。
     price: lowestFare.toLocaleString('en-US'),
   },
   contactEmail: 'sqcs12345@gmail.com',

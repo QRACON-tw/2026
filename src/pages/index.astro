@@ -255,9 +255,9 @@ const structuredData = [buildEventStructuredData(siteUrl)];
       <p class="fare__eyebrow">QRACON 2026 / FARE</p>
       <h2 class="section-title" id="fare-title">票種與票價</h2>
       <p class="fare__lede">
-        線上購票在 KKTIX，最低票價 {lowestFare} 元是學生票。學校或班級團體報名免報名費，來信
+        線上購票在 KKTIX，線上售票最低入場票價為學生票 {lowestFare} 元。票價另有含餐券方案；學校或班級團體可來信
         <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
-        申請。
+        {' '}申請免費參與。
       </p>
     </div>
 
@@ -295,8 +295,14 @@ const structuredData = [buildEventStructuredData(siteUrl)];
                 <th scope="row">{row.name}</th>
                 <td class="fare__note">{row.note ?? '—'}</td>
                 <td class="fare__price">
-                  <span class="fare__currency" aria-hidden="true">NT$</span>
-                  <span class="fare__amount">{row.price.toLocaleString('en-US')}</span>
+                  {row.price === 0 ? (
+                    <span class="fare__amount">免費</span>
+                  ) : (
+                    <>
+                      <span class="fare__currency" aria-hidden="true">NT$</span>
+                      <span class="fare__amount">{row.price.toLocaleString('en-US')}</span>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -306,7 +312,7 @@ const structuredData = [buildEventStructuredData(siteUrl)];
     </table>
 
     <div class="fare__foot">
-      <p>售票期間、名額與現場票是否開放，以 KKTIX 活動頁為準。</p>
+      <p>售票期限、名額與現場票是否開放，以 KKTIX 活動頁為準；主辦單位保留活動最終解釋權。</p>
       {
         registrationOpen ? (
           <Button
@@ -1152,6 +1158,10 @@ const structuredData = [buildEventStructuredData(siteUrl)];
     }
     .fare__table tbody th {
       font-size: var(--text-sm);
+      white-space: normal;
+    }
+    .fare__table thead th {
+      white-space: nowrap;
     }
     .fare__col-name {
       width: 44%;

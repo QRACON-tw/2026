@@ -1,16 +1,11 @@
-// 票種與票價：逐項轉錄自 KKTIX 活動頁（https://sqcs.kktix.cc/events/qracon2026，2026-11-01 核對）。
-// 改價或增減票種時只改這個檔；首頁票種表與車票的「最低票價」都由此推得。
-
 export interface TicketRow {
   name: string;
   note?: string;
   price: number;
-  /** 加購項（餐券），不算入場票價。 */
-  addOn?: boolean;
 }
 
 export interface TicketGroup {
-  id: 'online' | 'door' | 'sponsor';
+  id: 'online' | 'free' | 'door' | 'sponsor';
   name: string;
   note?: string;
   rows: TicketRow[];
@@ -20,20 +15,38 @@ export const ticketGroups: TicketGroup[] = [
   {
     id: 'online',
     name: '線上購票',
+    note: '一般票、學生票與 3 人團體票販售至 12 月 13 日 17:00；含餐券票種販售至 12 月 11 日 00:00。餐券不單獨販售。',
     rows: [
       { name: '一般票', price: 200 },
       { name: '學生票', note: '進場出示學生證', price: 150 },
       { name: '3 人團體一般票', price: 450 },
       { name: '3 人團體學生票', note: '進場出示學生證', price: 300 },
-      { name: '15 人團體一般票', price: 1800 },
-      { name: '15 人團體學生票', note: '進場出示學生證', price: 1200 },
-      { name: '餐券', note: '加購，不含入場', price: 60, addOn: true },
+      { name: '一般票（含餐券）', note: '內含 60 元餐券', price: 260 },
+      { name: '學生票（含餐券）', note: '進場出示學生證；內含 60 元餐券', price: 210 },
+      { name: '3 人團體一般票（含餐券）', note: '內含 60 元餐券', price: 630 },
+      {
+        name: '3 人團體學生票（含餐券）',
+        note: '進場出示學生證；內含 60 元餐券',
+        price: 480,
+      },
+    ],
+  },
+  {
+    id: 'free',
+    name: '免費票券',
+    note: '公關票供校園推廣與公關合作使用，請來信洽談；資格與名額依主辦單位確認為準。',
+    rows: [
+      {
+        name: '公關票',
+        note: '校園推廣或公關合作',
+        price: 0,
+      },
     ],
   },
   {
     id: 'door',
     name: '現場購票',
-    note: '報名截止後依售票情況決定是否開放',
+    note: '活動報名截止後，依售票情況決定是否開放',
     rows: [{ name: '現場票', price: 220 }],
   },
   {
@@ -48,9 +61,8 @@ export const ticketGroups: TicketGroup[] = [
   },
 ];
 
-/** 最低入場票價（不含餐券加購），車票上的「票價」用這個數。 */
 export const lowestFare = Math.min(
   ...ticketGroups
-    .filter((group) => group.id !== 'sponsor')
-    .flatMap((group) => group.rows.filter((row) => !row.addOn).map((row) => row.price)),
+    .filter((group) => group.id === 'online' || group.id === 'door')
+    .flatMap((group) => group.rows.map((row) => row.price)),
 );
