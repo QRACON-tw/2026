@@ -9,7 +9,7 @@ import FlapText from '../components/FlapText.astro';
 import StationSign from '../components/StationSign.astro';
 import wordmark from '../assets/brand/qracon-wordmark.png';
 import { site } from '../data/site';
-import { ticketGroups, lowestFare } from '../data/tickets';
+import { ticketGroups } from '../data/tickets';
 import { sessions, isListed } from '../data/sessions';
 import { roomById } from '../data/rooms';
 import { hhmm, minutesOf, toMinutes } from '../utils/time';
@@ -254,11 +254,6 @@ const structuredData = [buildEventStructuredData(siteUrl)];
     <div class="fare__head">
       <p class="fare__eyebrow">QRACON 2026 / FARE</p>
       <h2 class="section-title" id="fare-title">票種與票價</h2>
-      <p class="fare__lede">
-        線上購票在 KKTIX，線上售票最低入場票價為學生票 {lowestFare} 元。票價另有含餐券方案；學校或班級團體可來信
-        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
-        {' '}申請免費參與。
-      </p>
     </div>
 
     <table class="fare__table">
@@ -556,11 +551,6 @@ const structuredData = [buildEventStructuredData(siteUrl)];
     font-size: var(--text-sm);
     font-weight: var(--weight-sign);
     letter-spacing: 0.18em;
-  }
-
-  .fare__lede a {
-    text-decoration-thickness: var(--rule-mid);
-    text-underline-offset: 0.2em;
   }
 
   .fare__table {
