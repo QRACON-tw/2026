@@ -1,7 +1,7 @@
 import { roomById } from '../data/rooms';
 import { isListed, sessions } from '../data/sessions';
 import { site } from '../data/site';
-import { lowestFare } from '../data/tickets';
+import { ticketGroups } from '../data/tickets';
 import type { Session } from '../types/agenda';
 
 export interface BreadcrumbItem {
@@ -35,17 +35,21 @@ export function getIndexablePaths(): string[] {
   ];
 }
 
+const organizerRef = (siteUrl: URL) => ({
+  '@type': 'Organization',
+  '@id': organizationId(siteUrl),
+  name: site.organizers?.[0] ?? site.advisor,
+  url: site.advisorUrl,
+});
+
 export function buildSiteStructuredData(siteUrl: URL): StructuredData[] {
   const homepage = absoluteUrl('/', siteUrl);
   const orgId = organizationId(siteUrl);
 
   return [
     {
-      '@type': 'Organization',
-      '@id': orgId,
-      name: site.organizers?.[0] ?? site.advisor,
+      ...organizerRef(siteUrl),
       alternateName: site.advisor,
-      url: homepage,
       email: site.contactEmail ? `mailto:${site.contactEmail}` : undefined,
       sameAs: site.social.map((item) => item.url),
     },
@@ -53,8 +57,9 @@ export function buildSiteStructuredData(siteUrl: URL): StructuredData[] {
       '@type': 'WebSite',
       '@id': websiteId(siteUrl),
       url: homepage,
-      name: `${site.name} ${site.nameZh}`,
-      alternateName: site.nameEn,
+      // Matches og:site_name and the title suffix so Google shows "QRACON 2026", not the 2025 site's name.
+      name: site.name,
+      alternateName: [`${site.name} ${site.nameZh}`, site.nameEn],
       description: site.description,
       inLanguage: 'zh-Hant-TW',
       publisher: { '@id': orgId },
@@ -100,15 +105,15 @@ export function buildEventStructuredData(siteUrl: URL): StructuredData {
         addressCountry: 'TW',
       },
     },
-    organizer: { '@id': organizationId(siteUrl) },
-    offers: {
+    organizer: organizerRef(siteUrl),
+    offers: (ticketGroups.find((group) => group.id === 'online')?.rows ?? []).map((row) => ({
       '@type': 'Offer',
+      name: row.name,
       url: site.registration.url ?? homepage,
-      price: lowestFare,
+      price: row.price,
       priceCurrency: 'TWD',
       availability,
-      category: '學生票',
-    },
+    })),
   };
 }
 
@@ -157,7 +162,7 @@ export function buildSessionStructuredData(session: Session, siteUrl: URL): Stru
         addressCountry: 'TW',
       },
     },
-    organizer: { '@id': organizationId(siteUrl) },
+    organizer: organizerRef(siteUrl),
     superEvent: { '@id': eventId(siteUrl) },
   };
 }

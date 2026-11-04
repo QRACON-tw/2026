@@ -21,6 +21,7 @@ interface SiteInfo {
   timeZone: string;
   venue: { org: string; name: string; city: string; address: string | null };
   advisor: string;
+  advisorUrl: string;
   organizers: string[] | null;
   theme: { title: string | null; tagline: string | null };
   registration: { status: RegistrationStatus; url: string | null; price: string | null };
@@ -50,6 +51,7 @@ export const site: SiteInfo = {
     address: null,
   },
   advisor: 'EntangleTech',
+  advisorUrl: 'https://www.entangletech.tw/',
   organizers: ['EntangleTech 前瞻量子教育平台'],
   theme: {
     title: '薛丁格的貓',
