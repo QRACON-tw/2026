@@ -1,0 +1,267 @@
+---
+import { timed, spaces } from '../../data/side-program';
+import { eventDateTime } from '../../utils/timetable';
+import { toMinutes } from '../../utils/time';
+import Words from '../Words.astro';
+
+const programs = timed.map((row) => ({
+  ...row,
+  startDateTime: eventDateTime(toMinutes(row.from)),
+  endDateTime: eventDateTime(toMinutes(row.to)),
+}));
+---
+
+<section class="side-program" id="side-program" aria-labelledby="side-program-title">
+  <h2 class="side-program__title" id="side-program-title">場外活動</h2>
+
+  <div class="side-program__blocks">
+    <div class="side-program__block">
+      <!-- 窄螢幕把列改成堆疊（display 換掉）時列與儲存格的語意會從無障礙樹掉出去，角色先寫明。 -->
+      <table class="side-timed">
+        <caption>定時節目</caption>
+        <thead>
+          <tr role="row">
+            <th scope="col" role="columnheader">時間</th>
+            <th scope="col" role="columnheader">活動</th>
+            <th scope="col" role="columnheader">地點</th>
+          </tr>
+        </thead>
+        <tbody>
+          {programs.map((row) => (
+            <tr role="row">
+              <td class="side-timed__time" role="cell">
+                <time datetime={row.startDateTime}>{row.from}</time>–<time datetime={row.endDateTime}>{row.to}</time>
+              </td>
+              <th scope="row" role="rowheader" class="side-timed__title">
+                <Words text={row.title} />
+              </th>
+              <td class="side-timed__place" role="cell">
+                {row.place}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="side-program__block">
+      <table class="side-spaces">
+        <caption>常設空間</caption>
+        <thead>
+          <tr role="row">
+            <th scope="col" role="columnheader">空間</th>
+            <th scope="col" role="columnheader">位置</th>
+          </tr>
+        </thead>
+        <tbody>
+          {spaces.map((space) => (
+            <tr role="row">
+              <th scope="row" role="rowheader" class="side-spaces__name">
+                <Words text={space.name} />
+                {space.detail && (
+                  <span class="side-spaces__detail">
+                    ：<Words text={space.detail} />
+                  </span>
+                )}
+              </th>
+              <td class="side-spaces__place" role="cell">
+                {space.place}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .side-program {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+    padding-top: var(--space-5);
+    border-top: var(--rule-heavy) solid var(--color-ink);
+  }
+
+  .side-program__title {
+    font-size: var(--text-xl);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .side-program__blocks {
+    display: grid;
+    gap: var(--space-6) var(--gutter);
+    align-items: start;
+  }
+
+  .side-program__block {
+    min-width: 0;
+    border-top: var(--rule-heavy) solid var(--color-ink);
+  }
+
+  .side-program table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .side-program caption {
+    padding-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.14em;
+    text-align: left;
+  }
+
+  .side-timed thead th {
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-ink);
+    color: var(--color-white);
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-align: left;
+  }
+
+  .side-timed thead th:last-child,
+  .side-spaces thead th:last-child {
+    text-align: right;
+  }
+
+  .side-timed tbody th,
+  .side-timed tbody td {
+    padding: var(--space-3);
+    border-bottom: var(--rule-hair) solid var(--color-ink);
+    vertical-align: baseline;
+  }
+
+  .side-timed tbody th,
+  .side-spaces tbody th {
+    text-align: left;
+  }
+
+  .side-timed__time {
+    width: 1%;
+    white-space: nowrap;
+    font-family: var(--font-sign);
+    font-size: var(--text-md);
+    font-weight: var(--weight-sign-heavy);
+    letter-spacing: var(--tracking-sign);
+  }
+
+  .side-timed__title {
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+  }
+
+  .side-timed__place {
+    width: 1%;
+    white-space: nowrap;
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+    text-align: right;
+  }
+
+  .side-spaces thead th {
+    padding: var(--space-1) var(--space-3);
+    border-bottom: var(--rule-thin) solid var(--color-rule-fine);
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-align: left;
+  }
+
+  .side-spaces tbody th,
+  .side-spaces tbody td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: var(--rule-hair) solid var(--color-rule-fine);
+    vertical-align: baseline;
+  }
+
+  .side-spaces__name {
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+  }
+
+  .side-spaces__detail {
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+  }
+
+  .side-spaces__place {
+    width: 1%;
+    white-space: nowrap;
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+    text-align: right;
+  }
+
+  @media (min-width: 72rem) {
+    .side-program__blocks {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 39.99rem) {
+    .side-timed thead,
+    .side-spaces thead {
+      display: none;
+    }
+
+    /* 列改成 grid 後，表格寬度不再由內容推導；固定成容器寬，nowrap 的地點欄才撑不寬。 */
+    .side-program table {
+      table-layout: fixed;
+    }
+
+    .side-timed tbody tr {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      column-gap: var(--space-3);
+      align-items: baseline;
+      padding-block: var(--space-3);
+      border-bottom: var(--rule-hair) solid var(--color-ink);
+    }
+
+    .side-timed tbody th,
+    .side-timed tbody td {
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .side-timed__time {
+      grid-area: 1 / 1;
+      width: auto;
+    }
+
+    .side-timed__place {
+      grid-area: 1 / 2;
+      width: auto;
+      text-align: end;
+    }
+
+    .side-timed__title {
+      grid-area: 2 / 1 / 3 / -1;
+      margin-top: var(--space-1);
+    }
+
+    .side-spaces tbody tr {
+      display: grid;
+      padding-block: var(--space-2);
+      border-bottom: var(--rule-hair) solid var(--color-rule-fine);
+    }
+
+    .side-spaces tbody th,
+    .side-spaces tbody td {
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .side-spaces__place {
+      width: auto;
+      margin-top: var(--space-1);
+      text-align: start;
+    }
+  }
+</style>

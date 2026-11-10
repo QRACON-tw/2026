@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
 import Timetable from '../../components/agenda/Timetable.astro';
+import SideProgram from '../../components/agenda/SideProgram.astro';
 import SessionDialog from '../../components/agenda/SessionDialog.astro';
 import FlapText from '../../components/FlapText.astro';
 import Button from '../../components/Button.astro';
@@ -177,6 +178,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       <span class="agenda__hint-narrow">依時間瀏覽，點選議程查看詳情；虛線圈可收藏。</span>
     </p>
     <Timetable />
+    <SideProgram />
     <div class="agenda__poster">
       <Button
         href="/2026_QRACON_Agenda.jpg"

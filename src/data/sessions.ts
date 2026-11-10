@@ -10,7 +10,9 @@ type Draft = Omit<Session, 'start' | 'end' | 'speakerIds' | 'tags'> & {
   speakers?: string[];
 };
 
-// 逐格轉錄自 2026-11-07 議程草案（public/2026_QRACON_Agenda.jpg）。
+// 逐格轉錄自「議程表 - 更新 1110」試算表（2026-11-10）：
+// https://docs.google.com/spreadsheets/d/1fpkpSfhEPo5EH7iVfdfQhRpGMlQezFUQc2ZKlPb0MNg/edit#gid=423741764
+// 只取公開海報也有的四個場地欄位；休息、含移動的休息與移動至閉幕場所照表列。
 // 標題照原文；草案上的括號備註（暫定、?）移到 note，原文留在各場次註解。
 const drafts: Draft[] = [
   {
@@ -49,6 +51,14 @@ const drafts: Draft[] = [
     // 原文：柯忠廷｜?｜主持人?
   },
   {
+    id: 'break-1000',
+    title: '休息',
+    type: 'break',
+    from: '10:00',
+    to: '10:10',
+    rooms: ['hall', 'key'],
+  },
+  {
     id: 'poster',
     title: '【海報展示】量子論壇各主題與相關資料',
     type: 'exhibit',
@@ -67,14 +77,21 @@ const drafts: Draft[] = [
     speakers: ['ou-jia-he'],
   },
   {
-    id: 'hs-intro',
-    title: '量子科普 for 高中生',
+    id: 'break-1040',
+    title: '休息（含移動）',
+    type: 'break',
+    from: '10:40',
+    to: '11:00',
+    rooms: ['hall', 'key'],
+  },
+  {
+    id: 'quantum-basics',
+    title: '量子基礎科普',
     type: 'talk',
     from: '11:00',
     to: '11:30',
     rooms: ['key'],
-    note: '講題暫定。',
-    // 原文：量子科普 for 高中生（暫定）／講者 ?
+    // 11/07 原文：量子科普 for 高中生（暫定）／講者 ?；11/10 定為此講題，仍未列講者。
   },
   {
     id: 'talk-ke-zhong-ting',
@@ -84,17 +101,25 @@ const drafts: Draft[] = [
     to: '11:30',
     rooms: ['hall'],
     speakers: ['ke-zhong-ting'],
-    // 原文：（?）柯忠廷
+    // 11/07 原文：（?）柯忠廷；11/10 原文：講題待定／柯忠廷
   },
   {
-    id: 'taiwan-qc-research',
-    title: '台灣量子電腦之研究方向與產業佈局',
+    id: 'break-1130',
+    title: '休息',
+    type: 'break',
+    from: '11:30',
+    to: '11:45',
+    rooms: ['hall', 'key'],
+  },
+  {
+    id: 'high-speed-computing',
+    title: '量子高速運算',
     type: 'keynote',
     from: '11:45',
     to: '12:15',
     rooms: ['hall', 'key'],
-    note: '講題暫定。',
-    // 原文：台灣量子電腦之研究方向與產業佈局（暫定）／講者 ?
+    speakers: ['li-tai-yue'],
+    // 11/07 原文：台灣量子電腦之研究方向與產業佈局（暫定）／講者 ?；11/10 換題換講者。
   },
   {
     id: 'lunch',
@@ -148,6 +173,14 @@ const drafts: Draft[] = [
     speakers: ['nvidia'],
   },
   {
+    id: 'break-1415',
+    title: '休息（含移動）',
+    type: 'break',
+    from: '14:15',
+    to: '14:30',
+    rooms: ['hall', 'key'],
+  },
+  {
     id: 'talk-huang-yi-de',
     title: '黃亦得｜講題待公布',
     type: 'talk',
@@ -155,7 +188,7 @@ const drafts: Draft[] = [
     to: '15:00',
     rooms: ['hall'],
     speakers: ['huang-yi-de'],
-    // 原文：（?）黃亦得
+    // 11/07 原文：（?）黃亦得；11/10 原文：講題待定／黃亦得
   },
   {
     id: 'quantum-games',
@@ -167,6 +200,22 @@ const drafts: Draft[] = [
     speakers: ['guo-shu-yu'],
   },
   {
+    id: 'break-1500',
+    title: '休息（含移動）',
+    type: 'break',
+    from: '15:00',
+    to: '15:15',
+    rooms: ['hall', 'key'],
+  },
+  {
+    id: 'flex-break',
+    title: '彈性休息',
+    type: 'break',
+    from: '15:00',
+    to: '15:15',
+    rooms: ['room1', 'multi2'],
+  },
+  {
     id: 'quantum-compilers',
     title: '量子軟體編譯與電子設計自動化',
     type: 'talk',
@@ -176,14 +225,22 @@ const drafts: Draft[] = [
     speakers: ['jiang-jie-hong'],
   },
   {
-    id: 'drug-discovery',
-    title: '量子 in 藥物開發／分子模擬',
+    id: 'quantum-biology',
+    title: '量子生物',
     type: 'talk',
     from: '15:15',
     to: '15:45',
     rooms: ['key'],
-    note: '講題暫定。',
-    // 原文：量子 in 藥物開發／分子模擬（暫定）／講者 ?
+    speakers: ['chen-qi-sheng'],
+    // 11/07 原文：量子 in 藥物開發／分子模擬（暫定）／講者 ?；11/10 換題換講者。
+  },
+  {
+    id: 'break-1545',
+    title: '休息（含移動）',
+    type: 'break',
+    from: '15:45',
+    to: '16:00',
+    rooms: ['hall', 'key'],
   },
   {
     id: 'free-chat',
@@ -213,12 +270,20 @@ const drafts: Draft[] = [
   },
   {
     id: 'quantum-radar',
-    title: '量子雷達',
+    title: '量子雷達簡介',
     type: 'talk',
     from: '16:00',
     to: '16:30',
     rooms: ['key'],
     speakers: ['huang-cong-wei'],
+  },
+  {
+    id: 'move-closing',
+    title: '移動至閉幕場所',
+    type: 'break',
+    from: '16:30',
+    to: '16:45',
+    rooms: 'all',
   },
   {
     id: 'closing',
