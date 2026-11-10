@@ -42,12 +42,12 @@ const roomsOf = (id: string) => {
 const board = [
   { time: hhmm(byId('check-in').start), item: '報到', place: '全體' },
   { time: hhmm(byId('opening').start), item: '開幕', place: '全體' },
+  { time: hhmm(byId('opening-kickoff').start), item: '量子冒險啟程', place: '全體' },
   { time: hhmm(byId('keynote-dialogue').start), item: '開場嘉賓對談', place: '全體' },
-  { time: hhmm(byId('keynote').start), item: '主題演講', place: '全體' },
   {
-    time: '10:50',
+    time: hhmm(byId('quantum-annealing').start),
     item: '上午分軌',
-    place: `${busyRooms('10:50', '12:00')} 處場地同時進行`,
+    place: `${busyRooms(hhmm(byId('quantum-annealing').start), hhmm(byId('taiwan-qc-research').end))} 處場地同時進行`,
   },
   {
     time: hhmm(byId('lunch').start),
@@ -55,14 +55,9 @@ const board = [
     place: roomsOf('lunch'),
   },
   {
-    time: '13:30',
+    time: hhmm(byId('error-correction').start),
     item: '下午分軌與工作坊',
-    place: `${busyRooms('13:30', '16:00')} 處場地同時進行`,
-  },
-  {
-    time: '15:30',
-    item: '重播與工作坊',
-    place: `${busyRooms('15:30', '16:30')} 處場地同時進行`,
+    place: `${busyRooms(hhmm(byId('error-correction').start), hhmm(byId('quantum-radar').end))} 處場地同時進行`,
   },
   { time: hhmm(byId('closing').start), item: '閉幕', place: '全體' },
   { time: hhmm(byId('departure').start), item: '賦歸', place: '—' },
@@ -183,7 +178,7 @@ const structuredData = [buildEventStructuredData(siteUrl)];
         ）是由學生主導的量子科技年會。我們想讓學術界、產業界與教育端，在同一天、同一個院區裡交流，也想把中學到大學之間那道斷層接起來。
       </p>
       <p>
-        議程從量子電腦的基礎，一路排到 HPC、資安、藥物開發與量子感測；還有海報展示、工作坊與量子辯論。高中生和研究者，都能在時刻表上找到自己的那一場。
+        議程從高中生也聽得懂的量子科普與退火入門，一路排到量子錯誤更正、軟體編譯與分子模擬，還有量子雷達；海報展示、NVIDIA 工作坊與量子論壇穿插其中。高中生和研究者，都能在時刻表上找到自己的那一場。
       </p>
       <div class="about__theme">
         <span class="about__theme-label">QRACON 2026 / THEME</span>

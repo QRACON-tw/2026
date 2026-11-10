@@ -2,6 +2,7 @@
 import type { Session } from '../../types/agenda';
 import { typeLabels, canBookmark } from '../../data/sessions';
 import { roomById } from '../../data/rooms';
+import { speakerById } from '../../data/speakers';
 import { site } from '../../data/site';
 import { hhmm, durationLabel } from '../../utils/time';
 import PunchToggle from './PunchToggle.astro';
@@ -51,7 +52,13 @@ const roomNames =
   <div class="session-content__body">
     <section>
       <SectionHeading>講者</SectionHeading>
-      <Stamp label="待公布" tilt={false} />
+      {session.speakerIds.length > 0 ? (
+        <p class="session-content__speakers">
+          {session.speakerIds.map((id) => speakerById(id).name).join('、')}
+        </p>
+      ) : (
+        <Stamp label="待公布" tilt={false} />
+      )}
     </section>
     <section>
       <SectionHeading>摘要</SectionHeading>

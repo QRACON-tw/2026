@@ -6,7 +6,7 @@ import type { Session } from '../types/agenda';
 
 const DAY_START = toMinutes('08:00');
 const DAY_END = toMinutes('17:30');
-// 5-minute slots keep 09:20 / 09:50 / 10:50 / 11:20 on grid lines.
+// 5-minute slots keep 09:15 / 09:30 / 10:10 / 10:40 on grid lines.
 // --slot and --slot-band remain the heights of a 15-minute slot; each row is a third.
 const SLOT = 5;
 const ROWS = (DAY_END - DAY_START) / SLOT;

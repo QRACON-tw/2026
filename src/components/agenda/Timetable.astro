@@ -92,6 +92,7 @@ import Words from '../Words.astro';
                 's--all': all,
                 's--wide': wide,
                 's--short': end - start <= 30,
+                's--tiny': end - start < 20,
                 's--long': end - start >= 150 && !all,
               },
             ]}
@@ -464,6 +465,13 @@ import Words from '../Words.astro';
     margin-left: 0.5rem;
     color: var(--color-ink-soft);
   }
+  /* A 15-minute all-room band is only 24px tall; the default title overflows. */
+  @media (min-width: 48rem) {
+    .s--all.s--tiny .s__title {
+      font-size: var(--text-sm);
+      line-height: 1.2;
+    }
+  }
   .s--break:not(.s--all) {
     grid-template-rows: 3.5rem minmax(0, 1fr) 3.5rem;
     gap: 0.5rem;
@@ -588,7 +596,7 @@ import Words from '../Words.astro';
     border-color: var(--color-dim-rule);
   }
   @media (min-width: 72rem) {
-    /* All five rooms fit at this width, so release the horizontal scroll
+    /* All four rooms fit at this width, so release the horizontal scroll
        container and let the room labels stick while the page scrolls. */
     .tt-scroll {
       overflow: visible;
@@ -837,6 +845,23 @@ import Words from '../Words.astro';
     }
     .s--break.s--wide .s__title {
       justify-self: start;
+    }
+  }
+  @media (min-width: 48rem) {
+    /* A 15-minute cell is shorter than a station label: keep only the title. */
+    .s--tiny:not(.s--all) {
+      grid-template-rows: minmax(0, 1fr);
+      padding-block: 0.25rem;
+    }
+    .s--tiny:not(.s--all) .s__head {
+      display: none;
+    }
+    .s--tiny:not(.s--all) .s__title {
+      justify-self: center;
+      align-self: center;
+      text-align: center;
+      font-size: var(--text-xs);
+      line-height: 1.3;
     }
   }
   @media (prefers-reduced-motion: no-preference) {

@@ -25,12 +25,7 @@ export interface Room {
   capacity?: number;
 }
 
-export type RoomId =
-  | 'hall'
-  | 'key'
-  | 'multi12'
-  | 'multi3'
-  | 'room1';
+export type RoomId = 'hall' | 'key' | 'room1' | 'multi2';
 
 export interface Session {
   
