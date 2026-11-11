@@ -9,7 +9,6 @@ export const nav: NavItem[] = [
   { href: '/venue/', label: '會場交通' },
   { href: '/about/', label: '關於' },
   { href: '/sponsors/', label: '贊助' },
-  { href: '/cfp/', label: '投稿' },
   { href: '/team/', label: '團隊' },
   { href: '/coc/', label: '行為準則' },
 ];
