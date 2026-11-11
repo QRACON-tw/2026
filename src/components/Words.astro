@@ -7,12 +7,19 @@ interface Props {
 const { text } = Astro.props;
 const segmenter = new Intl.Segmenter('zh-Hant', { granularity: 'word' });
 const words = [...segmenter.segment(text)].map((s) => s.segment);
+// 句末標點不應被換到新行開頭。
+const cannotStartLine = /^[、。，．,.：:；;？！!?…‥」』）》】〕〉］）｝〗〙〟’”\)\]\}»›"']+/u;
 ---
 
-<span class="words">{words.map((word, i) => (i ? <><wbr />{word}</> : word))}</span>
+<span class="words">
+  {words.map((word, i) =>
+    i > 0 && !cannotStartLine.test(word) ? <><wbr />{word}</> : word
+  )}
+</span>
 
 <style>
   .words {
+    line-break: strict;
     word-break: keep-all;
     overflow-wrap: anywhere;
   }

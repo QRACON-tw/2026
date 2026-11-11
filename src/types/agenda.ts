@@ -41,6 +41,7 @@ export interface Session {
   tags: string[];
   
   abstract?: string;
+  keywords?: string[];
   
   note?: string;
   slidesUrl?: string;

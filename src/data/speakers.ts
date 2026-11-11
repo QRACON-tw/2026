@@ -9,6 +9,7 @@ export const speakers: Speaker[] = [
   { id: 'ou-jia-he', name: '歐家和' },
   { id: 'li-tai-yue', name: '李泰岳' },
   { id: 'huang-yi-de', name: '黃亦得' },
+  { id: 'huang-jing-yu', name: '黃靜瑜' },
   { id: 'guo-gao-yue', name: '郭高岳' },
   { id: 'zhang-ren-yu', name: '張仁瑀' },
   { id: 'guo-shu-yu', name: '郭姝妤' },

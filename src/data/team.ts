@@ -1,6 +1,6 @@
 // 籌備團隊名單（2026-11-01 由主辦提供，照原順序轉錄）。
 // 同一人跨組時在兩個組別都列一次；`headcount` 以去重後的人數計。
-// 頭像來自主辦提供的 Drive 資料夾，檔名就是姓名；沒照片的人顯示名牌卡。
+// 頭像原始來源主要為主辦提供的 Drive 資料夾；曾慶語使用 QRACON 主視覺風格的 imagegen 滿版圖。檔名就是姓名；缺少個人照片時使用共用示意頭像。
 
 import type { ImageMetadata } from 'astro';
 
@@ -8,7 +8,7 @@ const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/team/*.jp
   eager: true,
 });
 
-/** 依姓名取頭像；沒有照片的人回 null，頁面改用名牌卡。 */
+/** 依姓名取頭像；沒有照片的人回 null，由頁面改用共用示意頭像。 */
 export const photoOf = (name: string): ImageMetadata | null =>
   photos[`../assets/team/${name}.jpg`]?.default ?? null;
 
@@ -47,7 +47,7 @@ export const teamGroups: TeamGroup[] = [
     name: '設計組',
     en: 'DESIGN',
     blurb: '主視覺、網站與現場輸出物的視覺設計。',
-    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺閎'],
+    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺閎', '曾慶語'],
   },
   {
     id: 'program',
