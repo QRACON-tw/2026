@@ -64,6 +64,14 @@ const roomNames =
       <SectionHeading>摘要</SectionHeading>
       {session.abstract ? <p>{session.abstract}</p> : <Stamp label="待公布" tilt={false} />}
     </section>
+    {session.keywords && session.keywords.length > 0 && (
+      <section>
+        <SectionHeading>關鍵字</SectionHeading>
+        <ul class="session-content__keywords">
+          {session.keywords.map((keyword) => <li>{keyword}</li>)}
+        </ul>
+      </section>
+    )}
     {session.note && (
       <section>
         <SectionHeading>草案備註</SectionHeading>
@@ -129,6 +137,21 @@ const roomNames =
   }
   .session-content__body p {
     max-width: var(--measure);
+  }
+  .session-content__keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .session-content__keywords li {
+    padding: 0.3rem 0.65rem;
+    border: var(--rule-hair) solid var(--color-ink);
+    border-radius: var(--radius-chip);
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
   }
   .session-content__body :is(h2, h3) {
     margin-bottom: var(--space-3);

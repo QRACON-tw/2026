@@ -388,7 +388,7 @@ import Words from '../Words.astro';
     font-style: normal;
     font-weight: 700;
     line-height: 1;
-    vertical-align: middle;
+    vertical-align: baseline;
   }
   .s__meta {
     display: flex;
@@ -492,12 +492,10 @@ import Words from '../Words.astro';
     text-align: center;
   }
   .s--break:not(.s--all) .s__title :global(.words) {
-    padding: 0.15em 0.5em;
-    background: var(--color-paper);
+    padding: 0;
   }
   .s--break:not(.s--all) .s__meta {
     grid-row: 3;
-    background: var(--color-paper);
     padding: 0.1em 0.3em;
     justify-self: center;
   }
@@ -550,16 +548,6 @@ import Words from '../Words.astro';
   .s[data-state='now'] :is(.s__type, .s__meta, .s__status, .s__place) {
     color: var(--color-on-ink-soft);
   }
-  .s--break[data-hot] .s__title :global(.words),
-  .s--break[data-state='now'] .s__title :global(.words) {
-    background: var(--color-ink);
-  }
-  .s[data-hot] .s__title,
-  .s[data-hot] .s__meta,
-  .s[data-state='now'] .s__title,
-  .s[data-state='now'] .s__meta {
-    background-color: var(--color-ink);
-  }
   /* A filtered-out card stays quiet even when it is hovered or currently running. */
   .s[data-dim][data-hot],
   .s[data-dim][data-state='now'] {
@@ -576,16 +564,6 @@ import Words from '../Words.astro';
   .s[data-dim][data-hot] :is(.s__type, .s__meta, .s__status, .s__place),
   .s[data-dim][data-state='now'] :is(.s__type, .s__meta, .s__status, .s__place) {
     color: var(--color-dim-ink);
-  }
-  .s[data-dim][data-hot] .s__title,
-  .s[data-dim][data-hot] .s__meta,
-  .s[data-dim][data-state='now'] .s__title,
-  .s[data-dim][data-state='now'] .s__meta {
-    background-color: transparent;
-  }
-  .s--break[data-dim][data-hot] .s__title :global(.words),
-  .s--break[data-dim][data-state='now'] .s__title :global(.words) {
-    background: var(--color-paper);
   }
   .s[data-state='past'] {
     color: var(--color-ink-soft);
