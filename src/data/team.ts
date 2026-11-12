@@ -47,7 +47,7 @@ export const teamGroups: TeamGroup[] = [
     name: '設計組',
     en: 'DESIGN',
     blurb: '主視覺、網站與現場輸出物的視覺設計。',
-    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺翎', '曾慶語'],
+    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺翎', '曾慶語', '林樂穎'],
   },
   {
     id: 'program',
