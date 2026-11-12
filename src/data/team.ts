@@ -33,7 +33,7 @@ export const teamGroups: TeamGroup[] = [
     name: '行銷組',
     en: 'MARKETING',
     blurb: '社群經營、對外宣傳與報名推廣。',
-    members: ['李中原', '劉苡媗', '王璿雅', '石荃安', '程品叡'],
+    members: ['李中原', '劉苡媗', '王璿雅', '石荃安', '程品叡', '郭芮綺'],
   },
   {
     id: 'finance',
@@ -47,7 +47,7 @@ export const teamGroups: TeamGroup[] = [
     name: '設計組',
     en: 'DESIGN',
     blurb: '主視覺、網站與現場輸出物的視覺設計。',
-    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺閎', '曾慶語'],
+    members: ['嚴郁琇', '吳哲宇', '李庭彣', '劉翁凱', '黃鈺翎', '曾慶語', '林樂穎'],
   },
   {
     id: 'program',
