@@ -58,10 +58,19 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       <EmptyState label="平面圖待取得" />
     </section>
 
-    <section class="venue-page__rooms" aria-labelledby="rooms-title">
+    <section
+      class="venue-page__rooms"
+      aria-labelledby="rooms-title"
+      aria-describedby="rooms-hint"
+      role="region"
+      tabindex="0"
+    >
       <h2 class="visually-hidden" id="rooms-title">
         場地一覽
       </h2>
+      <p class="venue-page__rooms-hint" id="rooms-hint">
+        手機上可左右滑動查看完整表格。
+      </p>
       <table class="rooms-table">
         <caption>場地一覽（依議程草案）</caption>
         <thead>
@@ -125,6 +134,15 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
   .venue-page__rooms {
     grid-column: 1 / -1;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .venue-page__rooms-hint {
+    margin-bottom: var(--space-2);
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
   }
 
   .rooms-table {

@@ -171,7 +171,7 @@ const structuredData = [buildEventStructuredData(siteUrl)];
   <section class="about wrap" aria-labelledby="about-title">
     <div class="about__text">
       <h2 class="section-title" id="about-title">
-        學生主導的量子年會，第四年
+        <span class="about__title-line">學生主導的量子年會，</span><br class="about__title-break" />第四年
       </h2>
       <p>
         QRACON（{site.nameEn}
@@ -524,6 +524,10 @@ const structuredData = [buildEventStructuredData(siteUrl)];
   .section-title {
     font-size: var(--text-3xl);
     letter-spacing: 0.02em;
+  }
+
+  .about__title-break {
+    display: none;
   }
 
   .about,
@@ -914,6 +918,21 @@ const structuredData = [buildEventStructuredData(siteUrl)];
   }
 
   @media (max-width: 47.99rem) {
+    .about,
+    .fare,
+    .venue,
+    .partners {
+      padding-top: var(--space-8);
+    }
+
+    .departures {
+      margin-top: var(--space-8);
+    }
+
+    .departures__inner {
+      padding-block: var(--space-7);
+    }
+
     .hero__content {
       grid-template-rows: auto auto minmax(2rem, 1fr) auto;
       row-gap: var(--space-4);
@@ -951,6 +970,19 @@ const structuredData = [buildEventStructuredData(siteUrl)];
     .venue :global(.venue__sign),
     .venue__modes {
       grid-column: 1 / -1;
+    }
+
+    .about__text .section-title {
+      font-size: clamp(1.5rem, 8vw, 2.125rem);
+      letter-spacing: 0;
+    }
+
+    .about__title-break {
+      display: block;
+    }
+
+    .about__title-line {
+      white-space: nowrap;
     }
 
     .partners__list {

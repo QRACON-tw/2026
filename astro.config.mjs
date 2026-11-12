@@ -3,6 +3,11 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 export default defineConfig({
   site: 'https://2026-qracon.entangletech.tw',
+  vite: {
+    server: {
+      allowedHosts: ['preview.gonets.top'],
+    },
+  },
   fonts: [
     {
       provider: fontProviders.google(),
