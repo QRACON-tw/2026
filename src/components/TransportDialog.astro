@@ -1,0 +1,69 @@
+---
+import { site } from '../data/site';
+import { mapUrl, mapEmbedUrl } from '../data/transport';
+---
+
+<dialog class="transport-dialog" data-transport-dialog aria-labelledby="transport-title-map">
+  <div class="transport-dialog__bar">
+    <span>QRACON 2026 · 院區地圖</span>
+    <button type="button" data-transport-close autofocus aria-label="關閉地圖">×</button>
+  </div>
+  <section class="transport-dialog__content">
+    <h2 id="transport-title-map">{site.venue.org} {site.venue.name}</h2>
+    <p>{site.venue.address}</p>
+    <iframe data-map-src={mapEmbedUrl} title="中央研究院南部院區 Google 地圖" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <a href={mapUrl} target="_blank" rel="noopener noreferrer">用 Google 地圖開啟完整地圖 ↗</a>
+  </section>
+</dialog>
+
+<style>
+  .transport-dialog { position: fixed; inset: 0; margin: auto; width: min(44rem, calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100svh - 2rem); padding: 0; overflow: auto; overscroll-behavior: contain; border: var(--rule-mid) solid var(--color-ink); border-radius: var(--radius-dialog); background: var(--color-white); color: var(--color-ink); box-shadow: var(--shadow-dialog); }
+  .transport-dialog::backdrop { background: var(--color-backdrop); backdrop-filter: blur(4px); }
+  .transport-dialog__bar { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: var(--space-2) var(--space-5); background: var(--color-white); border-bottom: 1px solid var(--color-ink); font-size: var(--text-sm); font-weight: var(--weight-bold); }
+  .transport-dialog button { min-height: 2.75rem; padding: 0.5rem; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+  .transport-dialog button:hover { background: var(--color-paper); }
+  .transport-dialog__content { padding: clamp(1rem, 4vw, 2rem); }
+  .transport-dialog h2 { font-size: var(--text-xl); font-weight: var(--weight-black); }
+  .transport-dialog p { margin-block: var(--space-4); line-height: 1.8; }
+  .transport-dialog a { text-underline-offset: 0.25em; }
+  .transport-dialog iframe { display: block; width: 100%; height: clamp(16rem, 45svh, 25rem); border: 0; margin-block: var(--space-5); background: var(--color-paper); }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-transport-dialog]');
+  if (dialog) {
+    const openers = document.querySelectorAll<HTMLElement>('[data-transport-open="map"]');
+    let opener: HTMLElement | null = null;
+    let previousOverflow = '';
+    let backdropPress = false;
+    const outside = (event: MouseEvent) => {
+      const box = dialog.getBoundingClientRect();
+      return event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom;
+    };
+
+    openers.forEach((link) => link.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      if (!dialog.open) {
+        opener = link;
+        previousOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+      }
+      const frame = dialog.querySelector<HTMLIFrameElement>('iframe[data-map-src]');
+      if (frame && !frame.hasAttribute('src')) frame.src = frame.dataset.mapSrc!;
+      if (!dialog.open) dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-transport-close]')?.focus();
+    }));
+
+    dialog.querySelector('[data-transport-close]')?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('pointerdown', (event) => { backdropPress = event.target === dialog && outside(event); });
+    dialog.addEventListener('click', (event) => {
+      if (backdropPress && event.target === dialog && outside(event)) dialog.close();
+      backdropPress = false;
+    });
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflow = previousOverflow;
+      opener?.focus({ preventScroll: true });
+    });
+  }
+</script>

@@ -1,10 +1,10 @@
 ---
+import TransportInfo from '../components/TransportInfo.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import StationSign from '../components/StationSign.astro';
 import RowTable from '../components/RowTable.astro';
 import Stamp from '../components/Stamp.astro';
-import EmptyState from '../components/EmptyState.astro';
 import { rooms } from '../data/rooms';
 import { sessions, isListed } from '../data/sessions';
 import { minutesOf } from '../utils/time';
@@ -24,12 +24,6 @@ const usage = (id: RoomId) => {
   return inRoom.length > 2 ? `${titles.join('、')} 等 ${inRoom.length} 場` : titles.join('、');
 };
 
-const modes = [
-  { label: '高鐵', value: null },
-  { label: '臺鐵', value: null },
-  { label: '開車', value: null },
-  { label: '接駁車', value: null },
-];
 const breadcrumbs = [
   { label: '首頁', href: '/' },
   { label: '會場與交通', href: '/venue/' },
@@ -54,8 +48,31 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     <StationSign class="venue-page__sign" />
 
     <section class="venue-page__map" aria-labelledby="map-title">
-      <h2 id="map-title">場地平面圖</h2>
-      <EmptyState label="平面圖待取得" />
+      <h2 id="map-title">南部院區配置圖</h2>
+      <figure class="venue-map">
+        <div class="venue-map__art">
+          <img
+            src="/images/south-campus-map-redrawn.webp"
+            width="1825"
+            height="862"
+            alt="中央研究院南部院區鳥瞰示意圖，數字標示四處重要地點，名稱列於圖下方。"
+            loading="lazy"
+            decoding="async"
+          />
+          <ol class="venue-map__markers" aria-hidden="true">
+            <li style="--marker-x: 27%; --marker-y: 46%">1</li>
+            <li style="--marker-x: 39%; --marker-y: 70%">2</li>
+            <li style="--marker-x: 48%; --marker-y: 82%">3</li>
+            <li style="--marker-x: 69%; --marker-y: 57%">4</li>
+          </ol>
+        </div>
+        <ol class="venue-map__legend" aria-label="院區重要地點">
+          <li><span class="venue-map__legend-marker" aria-hidden="true">1</span><span>關鍵議題中心</span></li>
+          <li><span class="venue-map__legend-marker" aria-hidden="true">2</span><span>人文社會研究基地</span></li>
+          <li><span class="venue-map__legend-marker" aria-hidden="true">3</span><span>國際會議廳</span></li>
+          <li><span class="venue-map__legend-marker" aria-hidden="true">4</span><span>學人會館</span></li>
+        </ol>
+      </figure>
     </section>
 
     <section class="venue-page__rooms" aria-labelledby="rooms-title">
@@ -91,7 +108,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       <h2 class="visually-hidden" id="transport-title">
         交通方式
       </h2>
-      <RowTable caption="怎麼到院區" rows={modes} />
+      <TransportInfo />
       <RowTable
         class="venue-page__walk"
         caption="從院區大門到會場"
@@ -120,6 +137,90 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
   .venue-page__map h2 {
     margin-bottom: var(--space-3);
     font-size: var(--text-xl);
+  }
+
+  .venue-map {
+    margin: 0;
+  }
+
+  .venue-map__art {
+    position: relative;
+    overflow: hidden;
+    border: var(--rule-hair) solid var(--color-ink);
+    background: var(--color-white);
+  }
+
+  .venue-map__art img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .venue-map__markers {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    pointer-events: none;
+  }
+
+  .venue-map__markers li {
+    position: absolute;
+    top: var(--marker-y);
+    left: var(--marker-x);
+    display: grid;
+    width: 1.75rem;
+    aspect-ratio: 1;
+    place-items: center;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--color-white);
+    outline: 1px solid var(--color-ink);
+    border-radius: 50%;
+    background: var(--color-ink);
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-black);
+    line-height: 1;
+  }
+
+  .venue-map__legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    border-top: var(--rule-hair) solid var(--color-ink);
+    border-left: var(--rule-hair) solid var(--color-ink);
+    list-style: none;
+  }
+
+  .venue-map__legend li {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-right: var(--rule-hair) solid var(--color-ink);
+    border-bottom: var(--rule-hair) solid var(--color-ink);
+    background: var(--color-white);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    line-height: 1.35;
+  }
+
+  .venue-map__legend-marker {
+    display: grid;
+    width: 1.4rem;
+    height: 1.4rem;
+    flex: 0 0 1.4rem;
+    place-items: center;
+    background: var(--color-ink);
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-black);
+    line-height: 1;
   }
 
   .venue-page__rooms {
@@ -171,10 +272,11 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 
   .venue-page__transport {
     grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-7) var(--gutter);
-    align-items: start;
+    display: block;
+  }
+
+  .venue-page :global(.venue-page__walk) {
+    margin-top: var(--space-8);
   }
 
   @media (max-width: 47.99rem) {
@@ -183,9 +285,6 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       grid-column: 1 / -1;
     }
 
-    .venue-page__transport {
-      grid-template-columns: 1fr;
-    }
   }
 
   @media (min-width: 48rem) and (max-width: 71.99rem) {

@@ -1,0 +1,194 @@
+---
+import Icon from './Icon.astro';
+import Stamp from './Stamp.astro';
+import { drivingRoutes, transportModes } from '../data/transport';
+
+const availableModes = transportModes.filter((mode) => mode.kind !== 'pending');
+---
+
+<ul class="modes" role="list" aria-label="前往南部院區的交通方式">
+  {transportModes.map((mode) => (
+    <li class="modes__row">
+      <span class="modes__name">{mode.label}</span>
+      <span class="modes__detail">
+        {mode.kind === 'pending' ? (
+          <Stamp label="待公布" tilt={false} />
+        ) : (
+          <button
+            class="modes__open"
+            type="button"
+            data-route-open={mode.id}
+            aria-haspopup="dialog"
+            aria-controls={`transport-route-${mode.id}`}
+          >
+            路線說明 <Icon name="arrow-right" size={16} />
+          </button>
+        )}
+      </span>
+    </li>
+  ))}
+</ul>
+
+{availableModes.map((mode) => (
+  <dialog
+    class="route-dialog"
+    id={`transport-route-${mode.id}`}
+    data-route-dialog={mode.id}
+    aria-labelledby={`transport-route-title-${mode.id}`}
+  >
+    <div class="route-dialog__bar">
+      <span>QRACON 2026 · 路線說明</span>
+      <button type="button" data-route-close aria-label="關閉路線說明">×</button>
+    </div>
+    <section class="route-dialog__content">
+      <div class="route-dialog__heading">
+        <span class="route-dialog__mode-icon"><Icon name={mode.icon} size={24} /></span>
+        <h2 id={`transport-route-title-${mode.id}`}>{mode.label}</h2>
+      </div>
+      {mode.kind === 'public' && (
+        <div class="route-dialog__public">
+          <p class="route-dialog__eyebrow">路線資訊</p>
+          <h3>{mode.title}</h3>
+          <p>{mode.description}</p>
+        </div>
+      )}
+      {mode.kind === 'driving' && (
+        <div class="route-dialog__driving">
+          <p class="route-dialog__eyebrow">行車路線</p>
+          {drivingRoutes.map((route) => (
+            <section class="route-dialog__group">
+              <h3>{route.title}</h3>
+              {route.directions.map((direction) => (
+                <div class="route-dialog__direction">
+                  <h4>{direction.label}</h4>
+                  <ol>
+                    {direction.steps.map((step) => <li>{step}</li>)}
+                  </ol>
+                </div>
+              ))}
+            </section>
+          ))}
+        </div>
+      )}
+      <ul class="route-dialog__links" role="list">
+        {mode.mapLinks.map((link) => (
+          <li>
+            <a href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label} <Icon name="arrow-up-right" size={16} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </dialog>
+))}
+
+<style>
+  .modes {
+    margin: 0;
+    border-top: var(--rule-heavy) solid var(--color-ink);
+  }
+
+  .modes__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    border-bottom: var(--rule-hair) solid var(--color-ink);
+  }
+
+  .modes__name {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+  }
+
+  .modes__detail {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  .modes__open {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .modes__open:hover { color: var(--color-ink); text-decoration: underline; text-underline-offset: 0.25em; }
+  .modes__open:focus-visible,
+  .route-dialog button:focus-visible,
+  .route-dialog a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+  .route-dialog { position: fixed; inset: 0; margin: auto; width: min(42rem, calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100svh - 2rem); padding: 0; overflow: auto; overscroll-behavior: contain; border: var(--rule-mid) solid var(--color-ink); border-radius: var(--radius-dialog); background: var(--color-white); color: var(--color-ink); box-shadow: var(--shadow-dialog); }
+  .route-dialog::backdrop { background: var(--color-backdrop); backdrop-filter: blur(4px); }
+  .route-dialog__bar { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: var(--space-2) var(--space-5); background: var(--color-white); border-bottom: 1px solid var(--color-ink); font-size: var(--text-sm); font-weight: var(--weight-bold); }
+  .route-dialog button[data-route-close] { min-width: 2.75rem; min-height: 2.75rem; padding: 0.5rem; border: 0; background: transparent; color: inherit; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .route-dialog button[data-route-close]:hover { background: var(--color-paper); }
+  .route-dialog__content { padding: clamp(1rem, 4vw, 2rem); }
+  .route-dialog__heading { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5); }
+  .route-dialog__mode-icon { display: grid; width: 3rem; height: 3rem; flex: none; place-items: center; border: var(--rule-hair) solid var(--color-ink); background: var(--color-paper); }
+  .route-dialog h2 { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-black); }
+  .route-dialog h3 { margin: 0 0 var(--space-2); font-size: var(--text-md); font-weight: var(--weight-black); }
+  .route-dialog h4 { margin: var(--space-4) 0 var(--space-2); font-size: var(--text-sm); font-weight: var(--weight-bold); }
+  .route-dialog p { margin: 0; line-height: 1.8; }
+  .route-dialog__public { padding: var(--space-4); border-left: var(--rule-mid) solid var(--color-ink); background: var(--color-paper); }
+  .route-dialog__public h3 { margin-block: var(--space-1) var(--space-2); }
+  .route-dialog__eyebrow { margin: 0 0 var(--space-1); color: var(--color-ink-soft); font-size: var(--text-xs); font-weight: var(--weight-bold); letter-spacing: 0.08em; }
+  .route-dialog__group { padding-block: var(--space-4); border-top: var(--rule-hair) solid var(--color-ink); }
+  .route-dialog__group ol { display: grid; gap: var(--space-2); margin: 0; padding-left: 1.5rem; line-height: 1.75; }
+  .route-dialog__direction + .route-dialog__direction { margin-top: var(--space-4); }
+  .route-dialog__links { display: grid; gap: var(--space-2); margin: var(--space-5) 0 0; padding: var(--space-4) 0 0; border-top: var(--rule-hair) solid var(--color-ink); }
+  .route-dialog__links a { display: inline-flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-ink); text-underline-offset: 0.25em; }
+
+  @media (max-width: 30rem) {
+    .modes__row { align-items: flex-start; }
+    .modes__name { font-size: var(--text-lg); }
+    .modes__detail { text-align: right; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-route-open]').forEach((opener) => {
+    const routeId = opener.dataset.routeOpen;
+    const dialog = routeId
+      ? document.getElementById(`transport-route-${routeId}`) as HTMLDialogElement | null
+      : null;
+    if (!dialog) return;
+
+    let previousOverflow = '';
+    let backdropPress = false;
+    const outside = (event: MouseEvent) => {
+      const box = dialog.getBoundingClientRect();
+      return event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom;
+    };
+
+    opener.addEventListener('click', () => {
+      if (dialog.open) return;
+      previousOverflow = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+      dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-route-close]')?.focus();
+    });
+
+    dialog.querySelector<HTMLButtonElement>('[data-route-close]')?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('pointerdown', (event) => { backdropPress = event.target === dialog && outside(event); });
+    dialog.addEventListener('click', (event) => {
+      if (backdropPress && event.target === dialog && outside(event)) dialog.close();
+      backdropPress = false;
+    });
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflow = previousOverflow;
+      opener.focus({ preventScroll: true });
+    });
+  });
+</script>

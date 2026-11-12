@@ -48,7 +48,7 @@ export const site: SiteInfo = {
     org: '中央研究院',
     name: '南部院區',
     city: '臺南',
-    address: null,
+    address: '臺南市歸仁區歸仁十三路一段100號',
   },
   advisor: 'EntangleTech',
   advisorUrl: 'https://www.entangletech.tw/',

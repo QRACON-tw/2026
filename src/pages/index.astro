@@ -7,6 +7,7 @@ import Stamp from '../components/Stamp.astro';
 import Button from '../components/Button.astro';
 import FlapText from '../components/FlapText.astro';
 import StationSign from '../components/StationSign.astro';
+import TransportInfo from '../components/TransportInfo.astro';
 import wordmark from '../assets/brand/qracon-wordmark.png';
 import { site } from '../data/site';
 import { ticketGroups } from '../data/tickets';
@@ -332,16 +333,7 @@ const structuredData = [buildEventStructuredData(siteUrl)];
       <StationSign class="venue__sign" />
 
       <div class="venue__modes">
-        <ul class="modes" role="list">
-          {['高鐵', '臺鐵', '開車', '接駁車'].map((mode) => (
-            <li class="modes__row">
-              <span class="modes__name">{mode}</span>
-              <span class="modes__detail">
-                路線說明 <Stamp label="待公布" tilt={false} />
-              </span>
-            </li>
-          ))}
-        </ul>
+        <TransportInfo />
         <Button href="/venue/" variant="line" icon="arrow-right">
           會場與交通
         </Button>
@@ -813,33 +805,6 @@ const structuredData = [buildEventStructuredData(siteUrl)];
 
   .venue__modes {
     grid-column: 8 / span 5;
-  }
-
-  .modes {
-    margin: 0;
-    border-top: var(--rule-heavy) solid var(--color-ink);
-  }
-
-  .modes__row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-4);
-    padding-block: var(--space-4);
-    border-bottom: var(--rule-hair) solid var(--color-ink);
-  }
-
-  .modes__name {
-    font-size: var(--text-xl);
-    font-weight: var(--weight-black);
-  }
-
-  .modes__detail {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    color: var(--color-ink-soft);
-    font-size: var(--text-sm);
   }
 
   .partners__list {
