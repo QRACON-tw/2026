@@ -70,7 +70,7 @@ export const teamGroups: TeamGroup[] = [
     blurb: '報到、動線與現場支援。',
     members: [
       '林樂穎',
-      '謝依伶',
+      '謝依玲',
       '林家佑',
       '陳星穎',
       '郭旻宗',
@@ -80,6 +80,8 @@ export const teamGroups: TeamGroup[] = [
       '林孟詮',
       '曾慶語',
       '蘇奇彬',
+      '黃鈺閎',
+      '楊翊廷',
     ],
   },
 ];
