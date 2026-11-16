@@ -10,10 +10,8 @@ type Draft = Omit<Session, 'start' | 'end' | 'speakerIds' | 'tags'> & {
   speakers?: string[];
 };
 
-// 逐格轉錄自「議程表 - 更新 1110」試算表（2026-11-10）：
-// https://docs.google.com/spreadsheets/d/1fpkpSfhEPo5EH7iVfdfQhRpGMlQezFUQc2ZKlPb0MNg/edit#gid=423741764
-// 只取公開海報也有的四個場地欄位；休息、含移動的休息與移動至閉幕場所照表列。
-// 標題照原文；草案上的括號備註（暫定、?）移到 note，原文留在各場次註解。
+// 依「議程表 - 更新 1116.csv」更新公開流程、講題、講者與場地；摘要另參考同批摘要表。
+// 只收錄已確認的公開項目；暫定場次和工作人員空間不列入。
 const drafts: Draft[] = [
   {
     id: 'check-in',
@@ -21,7 +19,7 @@ const drafts: Draft[] = [
     type: 'break',
     from: '08:00',
     to: '09:00',
-    rooms: ['hall', 'key'],
+    rooms: ['hall'],
   },
   {
     id: 'opening',
@@ -29,7 +27,7 @@ const drafts: Draft[] = [
     type: 'plenary',
     from: '09:00',
     to: '09:15',
-    rooms: ['hall', 'key'],
+    rooms: ['hall'],
   },
   {
     id: 'opening-kickoff',
@@ -37,7 +35,7 @@ const drafts: Draft[] = [
     type: 'activity',
     from: '09:15',
     to: '09:30',
-    rooms: ['hall', 'key'],
+    rooms: ['hall'],
   },
   {
     id: 'keynote-dialogue',
@@ -45,12 +43,10 @@ const drafts: Draft[] = [
     type: 'keynote',
     from: '09:30',
     to: '10:00',
-    rooms: ['hall', 'key'],
-    speakers: ['ke-zhong-ting'],
-    note: '與談人與主持人待公布。',
+    rooms: ['hall'],
+    speakers: ['ke-zhong-ting', 'huang-jing-yu'],
     abstract:
       '特邀兩位量子計算領域的理論派與實驗派代表學者，共同探討量子計算將如何影響我們的未來。一位從量子資訊與演算法出發，推演量子計算的潛力與極限；一位站在實驗室第一線，面對把量子位元真正做出來、穩定運作的種種挑戰。兩種視角將在對談中交會，帶領同學看見量子計算從紙上理論走進現實的完整樣貌。',
-    // 原文：柯忠廷｜?｜主持人?
   },
   {
     id: 'break-1000',
@@ -61,22 +57,15 @@ const drafts: Draft[] = [
     rooms: ['hall', 'key'],
   },
   {
-    id: 'poster',
-    title: '【海報展示】量子論壇各主題與相關資料',
-    type: 'exhibit',
-    from: '08:00',
-    to: '13:45',
-    rooms: ['room1'],
-    note: '海報展示，自由參觀。',
-  },
-  {
     id: 'quantum-annealing',
-    title: '量子退火介紹及應用',
+    title: '邁向實用量子最佳化：從生活問題認識量子退火',
     type: 'talk',
     from: '10:10',
     to: '10:40',
-    rooms: ['hall', 'key'],
+    rooms: ['hall'],
     speakers: ['ou-jia-he'],
+    abstract:
+      '如何搭配飲食，兼顧營養與預算？如何調度共享自行車，讓借還車更方便？如何用不重複的小照片拼成一幅大圖？這些問題背後，都有龐大的選擇組合。本演講將從已發表的研究案例出發，以淺顯的例子與直觀圖像介紹量子退火的基本想法，說明如何將生活需求轉換為最佳化問題，以及量子最佳化與相關方法如何參與求解。無須量子物理或程式設計背景，也能認識其應用潛力，以及從研究走向實用需要面對的挑戰。',
   },
   {
     id: 'break-1040',
@@ -84,17 +73,18 @@ const drafts: Draft[] = [
     type: 'break',
     from: '10:40',
     to: '11:00',
-    rooms: ['hall', 'key'],
+    rooms: ['hall'],
   },
   {
     id: 'quantum-basics',
-    title: '黃靜瑜｜講題待公布',
+    title: '走進量子計算的世界',
     type: 'talk',
     from: '11:00',
     to: '11:30',
     rooms: ['key'],
     speakers: ['huang-jing-yu'],
-    // 依最新議程修訂：講者為黃靜瑜，講題待公布。
+    abstract:
+      '量子電腦為何能突破傳統超級電腦的運算極限？這場演講將以直觀的物理圖像帶同學認識量子位元（Qubit）的核心特性，包含量子疊加與量子糾纏如何賦予量子計算獨特的平行處理潛力。接著，我們將透過建構量子電腦的關鍵指標，帶領大家認識目前全球科研與產業界主流的超導、離子阱與中性原子等硬體技術路線，剖析不同系統各自的物理優勢與工程挑戰，讓同學全面理解量子科技的現況與未來發展。',
   },
   {
     id: 'talk-ke-zhong-ting',
@@ -107,7 +97,6 @@ const drafts: Draft[] = [
     abstract:
       '超導量子計算正從實驗室驗證邁向可擴展的實用時代。要實現容錯量子計算，核心關鍵在於打造極低損耗的高同調量子位元。本演講將帶領大家走入稀釋冷凍機的毫開爾文（mK）極低溫世界，揭開超導晶片的真實物理：從微奈米約瑟夫森接面製程、材料介電損耗與準粒子污染的抑制，到多位元微波調控的工程挑戰。最後，我們將分享結合 AI 自動化與強化學習的方式進行量子位元校正與邏輯閘最佳化。',
     keywords: ['超導量子位元', '約瑟夫森結', '高同調位元', 'AI-量測'],
-    // 11/07 原文：（?）柯忠廷；11/10 原文：講題待定／柯忠廷
   },
   {
     id: 'break-1130',
@@ -119,13 +108,14 @@ const drafts: Draft[] = [
   },
   {
     id: 'high-speed-computing',
-    title: '量子高速運算',
+    title: '邁向高效能量子運算的挑戰與未來展望',
     type: 'keynote',
     from: '11:45',
     to: '12:15',
-    rooms: ['hall', 'key'],
+    rooms: ['hall'],
     speakers: ['li-tai-yue'],
-    // 11/07 原文：台灣量子電腦之研究方向與產業佈局（暫定）／講者 ?；11/10 換題換講者。
+    abstract:
+      '隨著量子科技快速發展，量子運算被視為下一代重要的運算技術。然而，現階段量子硬體仍面臨量子位元規模、雜訊干擾及運算穩定性等挑戰。因此，整合量子運算（QC）與高效能運算（HPC），將是推動量子運算實用化的重要方向。本演講將介紹高效能量子運算的基本概念與技術挑戰，以及超級電腦在量子模擬與混合運算中的關鍵角色，並從國網中心的角度，分享臺灣在量子運算領域的發展策略、技術布局與未來展望。',
   },
   {
     id: 'lunch',
@@ -159,27 +149,10 @@ const drafts: Draft[] = [
     id: 'quantum-journey',
     title: '量子之旅：學習量子心路歷程',
     type: 'talk',
-    from: '13:45',
-    to: '14:15',
+    from: '14:30',
+    to: '15:00',
     rooms: ['key'],
-    speakers: ['zhang-ren-yu'],
-  },
-  {
-    id: 'quantum-forum',
-    title: '量子論壇',
-    type: 'roundtable',
-    from: '13:45',
-    to: '15:00',
-    rooms: ['room1'],
-  },
-  {
-    id: 'workshop-1',
-    title: 'NVIDIA 量子電腦工作坊 1',
-    type: 'workshop',
-    from: '13:45',
-    to: '15:00',
-    rooms: ['multi2'],
-    speakers: ['nvidia'],
+    note: '青年百億分享',
   },
   {
     id: 'break-1415',
@@ -191,21 +164,22 @@ const drafts: Draft[] = [
   },
   {
     id: 'talk-huang-yi-de',
-    title: '黃亦得｜講題待公布',
+    title: 'Amazon Braket & Microsoft Azure Quantum 雲端量子電腦介紹',
     type: 'talk',
     from: '14:30',
     to: '15:00',
-    rooms: ['key'],
+    rooms: ['hall'],
     speakers: ['huang-yi-de'],
-    // 11/07 原文：（?）黃亦得；11/10 原文：講題待定／黃亦得
+    abstract:
+      '量子電腦利用量子位元的疊加和糾纏性質，配合演算法控制量子位元的狀態，使其成為特定數學問題的輸出結果。Amazon Braket 以及 Microsoft Azure Quantum 皆提供多種量子電腦的雲端平台服務，包含超導、離子阱與中性原子等量子電腦。使用者可依問題與演算法種類，在相同使用方式下彈性選擇不同形式的量子電腦。',
   },
   {
     id: 'quantum-games',
     title: '從遊戲認識量子：量子計算與通訊的互動學習',
     type: 'talk',
-    from: '14:30',
-    to: '15:00',
-    rooms: ['hall'],
+    from: '13:45',
+    to: '14:15',
+    rooms: ['key'],
     speakers: ['guo-shu-yu'],
     abstract:
       '量子計算與通訊近年快速發展，在複雜問題求解與資訊安全等領域展現應用潛力。本演講將介紹團隊於量子計算、量子通訊及量子啟發式最佳化的研究與應用，並結合互動視覺化工具與遊戲示範，呈現量子可逆電路的運作、電路合成與最佳化，以及量子通訊安全的核心概念。透過具體案例與操作展示，協助同學建立直觀理解，認識量子科技如何連結實際問題，以及互動學習在量子教育中的應用。',
@@ -220,12 +194,12 @@ const drafts: Draft[] = [
     rooms: ['hall', 'key'],
   },
   {
-    id: 'flex-break',
-    title: '彈性休息',
-    type: 'break',
+    id: 'free-chat',
+    title: '自由交流',
+    type: 'activity',
     from: '15:00',
     to: '15:15',
-    rooms: ['room1', 'multi2'],
+    rooms: ['multi2'],
   },
   {
     id: 'quantum-compilers',
@@ -266,30 +240,13 @@ const drafts: Draft[] = [
     rooms: ['hall', 'key'],
   },
   {
-    id: 'free-chat',
-    title: '自由交流',
-    type: 'break',
-    from: '15:15',
-    to: '16:30',
-    rooms: ['room1'],
-  },
-  {
-    id: 'workshop-2',
-    title: 'NVIDIA 量子電腦工作坊 2',
-    type: 'workshop',
-    from: '15:15',
-    to: '16:30',
-    rooms: ['multi2'],
-    speakers: ['nvidia'],
-  },
-  {
     id: 'industry-and-study',
-    title: '量子產業／升學 現況與未來',
+    title: '量子產業 ∕ 升學 現況與未來',
     type: 'talk',
     from: '16:00',
     to: '16:30',
     rooms: ['hall'],
-    speakers: ['zhang-ren-wei'],
+    speakers: ['zhang-ren-yu'],
   },
   {
     id: 'quantum-radar',
@@ -320,7 +277,6 @@ const drafts: Draft[] = [
     rooms: 'all',
     note: '全體會眾至兩大演講廳參加閉幕。',
   },
-  { id: 'departure', title: '賦歸', type: 'break', from: '17:15', to: '17:30', rooms: 'all' },
 ];
 
 export const sessions: Session[] = drafts.map(({ from, to, speakers, ...rest }) => ({
