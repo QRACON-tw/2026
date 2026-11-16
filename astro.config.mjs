@@ -1,9 +1,10 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
+import { env } from 'node:process';
 
 export default defineConfig({
   site: 'https://qracon.entangletech.tw',
-  base: '/2026',
+  base: env.ASTRO_BASE_PATH ?? '/2026',
   fonts: [
     {
       provider: fontProviders.google(),

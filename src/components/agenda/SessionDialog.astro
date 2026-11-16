@@ -91,8 +91,11 @@ import SessionContent from './SessionContent.astro';
 </style>
 
 <script>
+  import { sitePath } from '../../utils/paths';
+
   const dialog = document.querySelector<HTMLDialogElement>('[data-session-dialog]');
   if (dialog) {
+    const agendaPrefix = new URL(sitePath('/agenda/'), location.origin).pathname;
     const panels = [...dialog.querySelectorAll<HTMLElement>('[data-session-detail]')];
     let opener: HTMLAnchorElement | null = null;
     let previousOverflow = '';
@@ -120,7 +123,10 @@ import SessionContent from './SessionContent.astro';
         event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null;
       if (!link || link.target === '_blank' || link.hasAttribute('download')) return;
       const url = new URL(link.href, location.href);
-      const match = url.origin === location.origin && url.pathname.match(/^\/agenda\/([^/]+)\/?$/);
+      const sessionPath = url.pathname.startsWith(agendaPrefix)
+        ? url.pathname.slice(agendaPrefix.length)
+        : '';
+      const match = url.origin === location.origin && sessionPath.match(/^([^/]+)\/?$/);
       if (!match) return;
       const panel = panels.find((item) => item.dataset.sessionDetail === match[1]);
       if (!panel) return;
