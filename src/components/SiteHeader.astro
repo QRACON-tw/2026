@@ -43,6 +43,12 @@ const path = Astro.url.pathname;
             </li>
           );
         })}
+        <li class="route__stop route__stop--year-switch" style={`--i: ${nav.length}`}>
+          <a href="/2025/" aria-label="前往 QRACON 2025 年度官網">
+            <span class="route__dot" aria-hidden="true" />
+            <span class="route__label">2025 年度</span>
+          </a>
+        </li>
       </ol>
     </nav>
   </div>
