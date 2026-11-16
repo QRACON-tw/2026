@@ -90,13 +90,13 @@ const drafts: Draft[] = [
   },
   {
     id: 'quantum-basics',
-    title: '黃靜瑜｜講題待公布',
+    title: '黃靜瑜｜講題待定',
     type: 'talk',
     from: '11:00',
     to: '11:30',
     rooms: ['key'],
     speakers: ['huang-jing-yu'],
-    // 依最新議程修訂：講者為黃靜瑜，講題待公布。
+    // 依最新議程修訂：講者為黃靜瑜，講題待定。
   },
   {
     id: 'talk-ke-zhong-ting',
@@ -164,8 +164,8 @@ const drafts: Draft[] = [
     id: 'quantum-journey',
     title: '量子之旅：學習量子心路歷程｜青年百億分享',
     type: 'talk',
-    from: '13:45',
-    to: '14:15',
+    from: '14:30',
+    to: '15:00',
     rooms: ['key'],
     speakers: ['zhang-ren-yu'],
   },
@@ -200,7 +200,7 @@ const drafts: Draft[] = [
     type: 'talk',
     from: '14:30',
     to: '15:00',
-    rooms: ['key'],
+    rooms: ['hall'],
     speakers: ['huang-yi-de'],
     abstract:
       '量子電腦利用量子位元的疊加和糾纏性質，配合演算法控制量子位元的狀態使其成為特定數學問題的輸出結果，這樣非古典物理學的運算過程展現出量子電腦強大的計算能力。Amazon Braket 以及 Microsoft Azure Quantum 皆為提供各種不同量子電腦的雲端平台，包含：超導、離子阱、中性原子等量子電腦。這種多元的量子平台服務，讓使用者可以根據問題與演算法的種類，在相同使用方式下彈性地選擇不同形式的量子電腦。',
@@ -210,9 +210,9 @@ const drafts: Draft[] = [
     id: 'quantum-games',
     title: '從遊戲認識量子：量子計算與通訊的互動學習',
     type: 'talk',
-    from: '14:30',
-    to: '15:00',
-    rooms: ['hall'],
+    from: '13:45',
+    to: '14:15',
+    rooms: ['key'],
     speakers: ['guo-shu-yu'],
     abstract:
       '量子計算與通訊近年快速發展，在複雜問題求解與資訊安全等領域展現應用潛力。本演講將介紹團隊於量子計算、量子通訊及量子啟發式最佳化的研究與應用，並結合互動視覺化工具與遊戲示範，呈現量子可逆電路的運作、電路合成與最佳化，以及量子通訊安全的核心概念。透過具體案例與操作展示，協助同學建立直觀理解，認識量子科技如何連結實際問題，以及互動學習在量子教育中的應用。',
