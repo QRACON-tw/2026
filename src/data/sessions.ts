@@ -1,5 +1,6 @@
 import type { Session, SessionType } from '../types/agenda';
 import { site } from './site';
+import { departure } from './side-program';
 
 const DAY = site.date;
 const at = (hhmm: string) => `${DAY}T${hhmm}:00+08:00`;
@@ -11,7 +12,7 @@ type Draft = Omit<Session, 'start' | 'end' | 'speakerIds' | 'tags'> & {
 };
 
 // 依「議程表 - 更新 1116.csv」更新公開流程、講題、講者與場地；摘要另參考同批摘要表。
-// 只收錄已確認的公開項目；暫定場次和工作人員空間不列入。
+// 公開議程與場地活動皆依 CSV；暫定活動可顯示在表格，但不建立場次詳情頁。
 const drafts: Draft[] = [
   {
     id: 'check-in',
@@ -19,7 +20,25 @@ const drafts: Draft[] = [
     type: 'break',
     from: '08:00',
     to: '09:00',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
+  },
+  {
+    id: 'partner-zone-multi1-morning',
+    title: '合作夥伴專區（暫定）',
+    type: 'exhibit',
+    from: '08:00',
+    to: '14:15',
+    rooms: ['multi1'],
+    detailPage: false,
+  },
+  {
+    id: 'rules-display-multi3',
+    title: '規則展示：量子圈圈叉叉與量子邏輯閘',
+    type: 'exhibit',
+    from: '08:00',
+    to: '12:45',
+    rooms: ['multi3'],
+    detailPage: false,
   },
   {
     id: 'opening',
@@ -27,7 +46,7 @@ const drafts: Draft[] = [
     type: 'plenary',
     from: '09:00',
     to: '09:15',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
   },
   {
     id: 'opening-kickoff',
@@ -35,7 +54,7 @@ const drafts: Draft[] = [
     type: 'activity',
     from: '09:15',
     to: '09:30',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
   },
   {
     id: 'keynote-dialogue',
@@ -43,7 +62,7 @@ const drafts: Draft[] = [
     type: 'keynote',
     from: '09:30',
     to: '10:00',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
     speakers: ['ke-zhong-ting', 'huang-jing-yu'],
     abstract:
       '特邀兩位量子計算領域的理論派與實驗派代表學者，共同探討量子計算將如何影響我們的未來。一位從量子資訊與演算法出發，推演量子計算的潛力與極限；一位站在實驗室第一線，面對把量子位元真正做出來、穩定運作的種種挑戰。兩種視角將在對談中交會，帶領同學看見量子計算從紙上理論走進現實的完整樣貌。',
@@ -63,7 +82,7 @@ const drafts: Draft[] = [
     type: 'talk',
     from: '10:10',
     to: '10:40',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
     speakers: ['ou-jia-he'],
     abstract:
       '如何搭配飲食，兼顧營養與預算？如何調度共享自行車，讓借還車更方便？如何用不重複的小照片拼成一幅大圖？這些問題背後，都有龐大的選擇組合。本演講將從已發表的研究案例出發，以淺顯的例子與直觀圖像介紹量子退火的基本想法，說明如何將生活需求轉換為最佳化問題，以及量子最佳化與相關方法如何參與求解。無須量子物理或程式設計背景，也能認識其應用潛力，以及從研究走向實用需要面對的挑戰。',
@@ -75,7 +94,7 @@ const drafts: Draft[] = [
     type: 'break',
     from: '10:40',
     to: '11:00',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
   },
   {
     id: 'quantum-basics',
@@ -115,7 +134,7 @@ const drafts: Draft[] = [
     type: 'keynote',
     from: '11:45',
     to: '12:15',
-    rooms: ['hall'],
+    rooms: ['hall', 'key'],
     speakers: ['li-tai-yue'],
     abstract:
       '隨著量子科技快速發展，量子運算被視為下一代重要的運算技術。然而，現階段量子硬體仍面臨量子位元規模、雜訊干擾及運算穩定性等挑戰。因此，整合量子運算（QC）與高效能運算（HPC），將是推動量子運算實用化的重要方向。本演講將介紹高效能量子運算的基本概念與技術挑戰，以及超級電腦在量子模擬與混合運算中的關鍵角色，並從國網中心的角度，分享臺灣在量子運算領域的發展策略、技術布局與未來展望。',
@@ -136,6 +155,15 @@ const drafts: Draft[] = [
     from: '12:45',
     to: '13:45',
     rooms: ['hall', 'key'],
+  },
+  {
+    id: 'games-multi3',
+    title: '場外遊戲：量子圈圈叉叉與量子邏輯閘',
+    type: 'activity',
+    from: '12:45',
+    to: '16:45',
+    rooms: ['multi3'],
+    detailPage: false,
   },
   {
     id: 'error-correction',
@@ -165,6 +193,17 @@ const drafts: Draft[] = [
     from: '14:15',
     to: '14:30',
     rooms: ['hall', 'key'],
+  },
+  {
+    id: 'partner-game-experience-multi1',
+    title: '合作夥伴＋遊戲體驗',
+    type: 'activity',
+    from: '14:15',
+    to: '16:45',
+    rooms: ['multi1'],
+    speakers: ['guo-shu-yu'],
+    abstract: '依 CSV，此時段包含暫定的合作夥伴專區，以及由郭姝妤負責的遊戲體驗專區。',
+    note: '合作夥伴專區暫定；遊戲體驗專區：郭姝妤。',
   },
   {
     id: 'talk-huang-yi-de',
@@ -197,14 +236,6 @@ const drafts: Draft[] = [
     from: '15:00',
     to: '15:15',
     rooms: ['hall', 'key'],
-  },
-  {
-    id: 'free-chat',
-    title: '自由交流',
-    type: 'activity',
-    from: '15:00',
-    to: '15:15',
-    rooms: ['multi2'],
   },
   {
     id: 'quantum-compilers',
@@ -266,12 +297,12 @@ const drafts: Draft[] = [
     keywords: ['量子雷達與傳統雷達的差異', '量子糾纏', '量子照明', '訊號光源與閒置光源', '可以偵測匿蹤戰機嗎？'],
   },
   {
-    id: 'move-closing',
-    title: '移動至閉幕場所',
+    id: 'break-before-closing',
+    title: '休息（含移動）',
     type: 'break',
     from: '16:30',
     to: '16:45',
-    rooms: 'all',
+    rooms: ['hall', 'key'],
   },
   {
     id: 'closing',
@@ -279,8 +310,25 @@ const drafts: Draft[] = [
     type: 'plenary',
     from: '16:45',
     to: '17:15',
-    rooms: 'all',
-    note: '全體會眾至兩大演講廳參加閉幕。',
+    rooms: ['hall', 'key'],
+  },
+  {
+    id: 'move-to-closing',
+    title: '移動至閉幕場所',
+    type: 'break',
+    from: '16:45',
+    to: '17:15',
+    rooms: ['multi1', 'multi3'],
+    detailPage: false,
+  },
+  {
+    id: 'departure',
+    title: departure.title,
+    type: 'departure',
+    from: departure.from,
+    to: '17:30',
+    rooms: ['hall', 'key', 'multi1', 'multi3'],
+    detailPage: false,
   },
 ];
 
@@ -306,11 +354,13 @@ export const typeLabels: Record<SessionType, string> = {
   exhibit: '展示',
   screening: '放映',
   break: '休息',
+  departure: '賦歸',
 };
 
-export const isListed = (s: Session) => s.type !== 'break';
+export const isListed = (s: Session) => s.type !== 'break' && s.type !== 'departure';
+export const hasDetailPage = (s: Session) => s.detailPage ?? isListed(s);
 export const canBookmark = (s: Session) =>
-  isListed(s) && s.rooms !== 'all' && s.type !== 'plenary';
+  hasDetailPage(s) && s.rooms !== 'all' && s.type !== 'plenary';
 
 export const phases = [
   { id: 'phase-arrival', label: '報到與開場', from: '08:00', to: '10:10' },

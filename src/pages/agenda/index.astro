@@ -5,10 +5,9 @@ import Timetable from '../../components/agenda/Timetable.astro';
 import SideProgram from '../../components/agenda/SideProgram.astro';
 import SessionDialog from '../../components/agenda/SessionDialog.astro';
 import FlapText from '../../components/FlapText.astro';
-import Button from '../../components/Button.astro';
 import { sessions, typeLabels, isListed, phases } from '../../data/sessions';
 import { site } from '../../data/site';
-import { rooms } from '../../data/rooms';
+import { timetableRooms } from '../../data/rooms';
 import Icon from '../../components/Icon.astro';
 import { buildBreadcrumbStructuredData } from '../../utils/seo';
 import type { SessionType } from '../../types/agenda';
@@ -39,13 +38,12 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 
 <BaseLayout
   title="議程"
-  description={`QRACON 2026 議程草案：${site.dateLabel}（${site.weekday}）在${site.venue.org}${site.venue.name}舉行，包含主題演講、量子科技短講、工作坊、量子論壇與海報展示。`}
+  description={`QRACON 2026 議程：${site.dateLabel}（${site.weekday}）在${site.venue.org}${site.venue.name}舉行，包含主題演講、量子科技短講、工作坊、量子論壇與海報展示。`}
   structuredData={structuredData}
 >
   <link slot="head" rel="expect" href="#timetable" blocking="render" />
   <PageHead
     title="議程"
-    status="草案"
     lede={`${site.dateLabel}（${site.weekday}）・${site.venue.org} ${site.venue.name}`}
     breadcrumbs={breadcrumbs}
   />
@@ -103,7 +101,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       </div>
       <div class="room-controls" data-room-controls>
         <select data-room-jump aria-label="選擇議程場地">
-          {rooms.map((room, index) => (
+          {timetableRooms.map((room, index) => (
             <option value={index}>{room.short}</option>
           ))}
         </select>
@@ -112,7 +110,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
             <Icon name="arrow-left" size={18} />
           </button>
           <span data-room-position aria-live="polite">
-            1／{rooms.length}
+            1／{timetableRooms.length}
           </span>
           <button type="button" data-room-next aria-label="下一個場地">
             <Icon name="arrow-right" size={18} />
@@ -179,15 +177,6 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     </p>
     <Timetable />
     <SideProgram />
-    <div class="agenda__poster">
-      <Button
-        href="/agenda.csv"
-        variant="line"
-        download="QRACON-2026-agenda.csv"
-      >
-        下載議程 CSV
-      </Button>
-    </div>
     <SessionDialog />
   </div>
 </BaseLayout>
@@ -196,11 +185,6 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
   .agenda {
     display: grid;
     gap: var(--space-6);
-  }
-
-  .agenda__poster {
-    display: flex;
-    justify-content: flex-start;
   }
 
   .now-board {
@@ -317,14 +301,14 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
   }
   .phase-route ol {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1.1fr)) minmax(0, 0.6fr);
     gap: var(--space-2) 0;
     margin: 0;
   }
   .phase-route li {
     position: relative;
-    flex: 1 1 10rem;
+    min-width: 0;
   }
   .phase-route li::before {
     content: '';

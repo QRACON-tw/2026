@@ -1,5 +1,5 @@
-import { departure, spaces, timed } from './side-program';
-import { isListed, sessions, typeLabels } from './sessions';
+import { departure, sideVenues } from './side-program';
+import { hasDetailPage, sessions, typeLabels } from './sessions';
 import { roomById } from './rooms';
 import { speakerById } from './speakers';
 import type { Session } from '../types/agenda';
@@ -19,7 +19,7 @@ export interface AgendaEntry {
   hasDetails: boolean;
 }
 
-const sessionEntries: AgendaEntry[] = sessions.map((session) => ({
+const sessionEntries: AgendaEntry[] = sessions.filter((session) => session.type !== 'departure').map((session) => ({
   id: session.id,
   from: session.start.slice(11, 16),
   to: session.end.slice(11, 16),
@@ -34,22 +34,24 @@ const sessionEntries: AgendaEntry[] = sessions.map((session) => ({
   note: session.note ?? '',
   kind: 'session',
   session,
-  hasDetails: isListed(session),
+  hasDetails: hasDetailPage(session),
 }));
 
-const programEntries: AgendaEntry[] = timed.map((program) => ({
-  id: program.id,
-  from: program.from,
-  to: program.to,
-  title: program.title,
-  type: program.type,
-  speaker: program.speaker ?? '',
-  place: program.place,
-  abstract: '',
-  note: program.note ?? '',
-  kind: 'program',
-  hasDetails: false,
-}));
+const programEntries: AgendaEntry[] = sideVenues.flatMap((venue) =>
+  (venue.programs ?? []).map((program) => ({
+    id: program.id,
+    from: program.from ?? '',
+    to: program.to,
+    title: program.title,
+    type: '活動',
+    speaker: '',
+    place: venue.name,
+    abstract: program.detail ?? '',
+    note: program.note ?? '',
+    kind: 'program' as const,
+    hasDetails: false,
+  })),
+);
 
 const departureEntry: AgendaEntry = {
   id: 'departure',
@@ -71,4 +73,10 @@ export const agendaEntries = [...sessionEntries, ...programEntries, departureEnt
   return a.kind === 'session' ? -1 : 1;
 });
 
-export { spaces };
+export const spaces = sideVenues.flatMap((venue) =>
+  (venue.spaces ?? []).map((space) => ({
+    name: space.title,
+    detail: space.detail ?? null,
+    place: venue.name,
+  })),
+);

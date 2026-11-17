@@ -1,8 +1,8 @@
 import { sessions } from '../data/sessions';
-import { rooms, roomIndex, roomById } from '../data/rooms';
+import { timetableRooms, roomIndex, roomById } from '../data/rooms';
 import { site } from '../data/site';
 import { minutesOf, toMinutes } from './time';
-import type { Session } from '../types/agenda';
+import type { RoomId, Session } from '../types/agenda';
 
 const DAY_START = toMinutes('08:00');
 const DAY_END = toMinutes('17:30');
@@ -12,11 +12,15 @@ const SLOT = 5;
 const ROWS = (DAY_END - DAY_START) / SLOT;
 // Grid gridRow 1 contains room headings; session rows start at 2.
 export const gridRow = (minutes: number) => 2 + (minutes - DAY_START) / SLOT;
-const firstRoom = (session: Session) =>
-  session.rooms === 'all' ? -1 : (roomIndex.get(session.rooms[0]!) ?? 0);
+const columnForRoom = (id: RoomId) => {
+  const column = roomIndex.get(id);
+  if (column === undefined) throw new Error(`Session room is not in the main timetable: ${id}`);
+  return column;
+};
+const firstRoom = (session: Session) => (session.rooms === 'all' ? -1 : columnForRoom(session.rooms[0]!));
 export const sessionColumns = (session: Session): [number, number] => {
-  if (session.rooms === 'all') return [1, rooms.length + 1];
-  const indices = session.rooms.map((id) => roomIndex.get(id) ?? 0);
+  if (session.rooms === 'all') return [1, timetableRooms.length + 1];
+  const indices = session.rooms.map(columnForRoom);
   return [1 + Math.min(...indices), 2 + Math.max(...indices)];
 };
 export const sessionRoomLabel = (session: Session) =>

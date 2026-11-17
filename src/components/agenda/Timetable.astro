@@ -1,6 +1,6 @@
 ---
-import { typeLabels, isListed, canBookmark, phases } from '../../data/sessions';
-import { rooms } from '../../data/rooms';
+import { typeLabels, isListed, hasDetailPage, canBookmark, phases } from '../../data/sessions';
+import { timetableRooms } from '../../data/rooms';
 import { hhmm, minutesOf, toMinutes } from '../../utils/time';
 import {
   gridRow,
@@ -22,7 +22,7 @@ import Words from '../Words.astro';
   class="timetable-board"
   id="timetable"
   data-timetable-board
-  style={`--room-count: ${rooms.length}; --row-template: ${rowTemplate}`}
+  style={`--room-count: ${timetableRooms.length}; --row-template: ${rowTemplate}`}
 >
   <h2 class="visually-hidden" id="timetable-title">完整議程</h2>
   <p class="visually-hidden" id="timetable-help">
@@ -64,7 +64,7 @@ import Words from '../Words.astro';
     aria-describedby="timetable-help"
   >
     <div class="tt">
-      {rooms.map((room, index) => (
+      {timetableRooms.map((room, index) => (
         <div
           class="tt__room"
           data-col={index + 1}
@@ -82,6 +82,7 @@ import Words from '../Words.astro';
         const start = minutesOf(session.start);
         const end = minutesOf(session.end);
         const listed = isListed(session);
+        const detailPage = hasDetailPage(session);
         const all = session.rooms === 'all';
         const wide = !all && session.rooms.length > 1;
         return (
@@ -125,7 +126,7 @@ import Words from '../Words.astro';
               </div>
             )}
             <h3 class="s__title" id={`s-${session.id}`}>
-              {listed ? (
+              {detailPage ? (
                 <a href={sitePath(`/agenda/${session.id}/`)}>
                   <Words text={session.title} />
                   <span class="s__info" aria-hidden="true">
@@ -358,6 +359,19 @@ import Words from '../Words.astro';
     line-height: 1.45;
     overflow-wrap: anywhere;
   }
+  .s--plenary .s__head {
+    display: none;
+  }
+  .s--plenary .s__title {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: stretch;
+    align-self: center;
+    text-align: center;
+  }
+  .s--plenary .s__meta {
+    display: none;
+  }
   .s__title a {
     text-decoration: none;
   }
@@ -421,6 +435,26 @@ import Words from '../Words.astro';
     overflow: hidden;
   }
   .s--short .s__meta {
+    display: none;
+  }
+  .s.s--plenary {
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0;
+  }
+  .s.s--departure {
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0;
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+  .s--departure .s__title {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: stretch;
+    align-self: center;
+    text-align: center;
+  }
+  .s--departure .s__meta {
     display: none;
   }
   .s--all {
@@ -603,6 +637,12 @@ import Words from '../Words.astro';
     .s--long .s__title :global(.words) {
       word-break: normal;
     }
+    .s--long:is(.s--activity, .s--exhibit) .s__title {
+      max-width: 18rem;
+      writing-mode: horizontal-tb;
+      text-orientation: mixed;
+      text-align: center;
+    }
     .s--long .s__info {
       display: none;
     }
@@ -732,6 +772,11 @@ import Words from '../Words.astro';
       text-align: left;
       -webkit-line-clamp: unset;
     }
+    .s--plenary .s__title {
+      grid-row: 1;
+      grid-column: 1 / -1;
+      text-align: center;
+    }
     .s__meta,
     .s--short .s__meta {
       display: flex;
@@ -743,6 +788,8 @@ import Words from '../Words.astro';
       background: transparent;
       text-align: right;
     }
+    /* The phone layout stacks all venues into one list, so restore the venue
+       label that the desktop grid communicates through its column heading. */
     .s__place {
       display: block;
       grid-column: 1 / -1;

@@ -5,7 +5,7 @@ import SessionContent from '../../components/agenda/SessionContent.astro';
 import Icon from '../../components/Icon.astro';
 import Words from '../../components/Words.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { sessions, isListed } from '../../data/sessions';
+import { sessions, hasDetailPage } from '../../data/sessions';
 import { roomById } from '../../data/rooms';
 import { site } from '../../data/site';
 import { hhmm, minutesOf } from '../../utils/time';
@@ -19,7 +19,7 @@ import type { Session } from '../../types/agenda';
 
 export const getStaticPaths = (() =>
   sessions
-    .filter(isListed)
+    .filter(hasDetailPage)
     .map((session) => ({
       params: { id: session.id },
       props: { session },
@@ -34,11 +34,11 @@ const roomNames = session.rooms === 'all' ? ['全體'] : session.rooms.map((r) =
 
 const sameRoom =
   session.rooms === 'all'
-    ? sessions.filter((s) => s.rooms === 'all' && isListed(s))
+    ? sessions.filter((s) => s.rooms === 'all' && hasDetailPage(s))
     : session.rooms.length === 1
       ? sessions.filter(
           (s) =>
-            isListed(s) &&
+            hasDetailPage(s) &&
             s.rooms !== 'all' &&
             s.rooms.length === 1 &&
             s.rooms[0] === session.rooms[0],
@@ -62,7 +62,7 @@ const structuredData = [
 
 <BaseLayout
   title={session.title}
-  description={`${session.title}｜QRACON 2026 議程草案，${site.dateLabel} ${hhmm(session.start)}–${hhmm(session.end)}，${roomNames.join('、')}。`}
+  description={`${session.title}｜QRACON 2026 議程，${site.dateLabel} ${hhmm(session.start)}–${hhmm(session.end)}，${roomNames.join('、')}。`}
   noindex={!isIndexableSession(session)}
   structuredData={structuredData}
 >

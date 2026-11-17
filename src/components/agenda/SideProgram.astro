@@ -1,77 +1,61 @@
 ---
-import { timed, spaces } from '../../data/side-program';
+import { sideVenues } from '../../data/side-program';
 import { eventDateTime } from '../../utils/timetable';
 import { toMinutes } from '../../utils/time';
 import Words from '../Words.astro';
 
-const programs = timed.map((row) => ({
-  ...row,
-  startDateTime: eventDateTime(toMinutes(row.from)),
-  endDateTime: eventDateTime(toMinutes(row.to)),
+const venues = sideVenues.map((venue, index) => ({
+  ...venue,
+  headingId: `side-venue-${index + 1}`,
+  programs: venue.programs?.map((row) => ({
+    ...row,
+    startDateTime: row.from ? eventDateTime(toMinutes(row.from)) : undefined,
+    endDateTime: row.to ? eventDateTime(toMinutes(row.to)) : undefined,
+  })),
 }));
+const venueColumns = [venues.slice(0, 2), venues.slice(2)];
 ---
 
 <section class="side-program" id="side-program" aria-labelledby="side-program-title">
-  <h2 class="side-program__title" id="side-program-title">場外活動</h2>
+  <h2 class="side-program__title" id="side-program-title">其他場地與活動</h2>
 
-  <div class="side-program__blocks">
-    <div class="side-program__block">
-      <!-- 窄螢幕把列改成堆疊（display 換掉）時列與儲存格的語意會從無障礙樹掉出去，角色先寫明。 -->
-      <table class="side-timed">
-        <caption>定時節目</caption>
-        <thead>
-          <tr role="row">
-            <th scope="col" role="columnheader">時間</th>
-            <th scope="col" role="columnheader">活動</th>
-            <th scope="col" role="columnheader">地點</th>
-          </tr>
-        </thead>
-        <tbody>
-          {programs.map((row) => (
-            <tr role="row">
-              <td class="side-timed__time" role="cell">
-                <time datetime={row.startDateTime}>{row.from}</time>–<time datetime={row.endDateTime}>{row.to}</time>
-              </td>
-              <th scope="row" role="rowheader" class="side-timed__title">
-                <Words text={row.title} />
-              </th>
-              <td class="side-timed__place" role="cell">
-                {row.place}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="side-program__block">
-      <table class="side-spaces">
-        <caption>常設空間</caption>
-        <thead>
-          <tr role="row">
-            <th scope="col" role="columnheader">空間</th>
-            <th scope="col" role="columnheader">位置</th>
-          </tr>
-        </thead>
-        <tbody>
-          {spaces.map((space) => (
-            <tr role="row">
-              <th scope="row" role="rowheader" class="side-spaces__name">
-                <Words text={space.name} />
-                {space.detail && (
-                  <span class="side-spaces__detail">
-                    ：<Words text={space.detail} />
-                  </span>
-                )}
-              </th>
-              <td class="side-spaces__place" role="cell">
-                {space.place}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+  <div class="side-program__venues">
+    {venueColumns.map((column) => (
+      <div class="side-program__column">
+        {column.map((venue) => (
+          <section class="side-venue" aria-labelledby={venue.headingId}>
+            <h3 class="side-venue__title" id={venue.headingId}>
+              <Words text={venue.name} />
+            </h3>
+            <ul class="side-venue__list" role="list">
+              {venue.programs?.map((row) => (
+                <li class="side-entry" role="listitem">
+                  {row.from && (
+                    <p class="side-entry__time">
+                      <time datetime={row.startDateTime}>{row.from}</time>
+                      {row.to && <>–<time datetime={row.endDateTime}>{row.to}</time></>}
+                    </p>
+                  )}
+                  <div class="side-entry__content">
+                    <p class="side-entry__name"><Words text={row.title} /></p>
+                    {row.detail && <p class="side-entry__detail"><Words text={row.detail} /></p>}
+                    {row.note && <p class="side-entry__note"><Words text={row.note} /></p>}
+                  </div>
+                </li>
+              ))}
+              {venue.spaces?.map((space) => (
+                <li class="side-entry side-entry--space" role="listitem">
+                  <div class="side-entry__content">
+                    <p class="side-entry__name"><Words text={space.title} /></p>
+                    {space.detail && <p class="side-entry__detail"><Words text={space.detail} /></p>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    ))}
   </div>
 </section>
 
@@ -89,58 +73,58 @@ const programs = timed.map((row) => ({
     letter-spacing: var(--tracking-tight);
   }
 
-  .side-program__blocks {
+  .side-program__venues {
     display: grid;
-    gap: var(--space-6) var(--gutter);
-    align-items: start;
+    gap: var(--space-4);
   }
 
-  .side-program__block {
+  .side-program__column {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
     min-width: 0;
-    border-top: var(--rule-heavy) solid var(--color-ink);
   }
 
-  .side-program table {
-    width: 100%;
-    border-collapse: collapse;
+  @media (min-width: 48rem) {
+    .side-program__venues {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
   }
 
-  .side-program caption {
-    padding-bottom: var(--space-2);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-bold);
-    letter-spacing: 0.14em;
-    text-align: left;
+  .side-venue {
+    min-width: 0;
+    border-bottom: var(--rule-thin) solid var(--color-ink);
   }
 
-  .side-timed thead th {
-    padding: var(--space-1) var(--space-3);
+  .side-venue__title {
+    padding: var(--space-2) var(--space-3);
     background: var(--color-ink);
     color: var(--color-white);
-    font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    text-align: left;
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.08em;
   }
 
-  .side-timed thead th:last-child,
-  .side-spaces thead th:last-child {
-    text-align: right;
+  .side-venue__list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .side-timed tbody th,
-  .side-timed tbody td {
+  .side-entry {
+    display: grid;
+    grid-template-columns: minmax(8.5rem, 0.26fr) minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: baseline;
+    min-width: 0;
     padding: var(--space-3);
-    border-bottom: var(--rule-hair) solid var(--color-ink);
-    vertical-align: baseline;
+    border-top: var(--rule-hair) solid var(--color-rule-fine);
   }
 
-  .side-timed tbody th,
-  .side-spaces tbody th {
-    text-align: left;
-  }
-
-  .side-timed__time {
-    width: 1%;
+  .side-entry__time {
+    margin: 0;
     white-space: nowrap;
     font-family: var(--font-sign);
     font-size: var(--text-md);
@@ -148,120 +132,33 @@ const programs = timed.map((row) => ({
     letter-spacing: var(--tracking-sign);
   }
 
-  .side-timed__title {
+  .side-entry__content {
+    min-width: 0;
+  }
+
+  .side-entry__name {
+    margin: 0;
     font-size: var(--text-md);
     font-weight: var(--weight-bold);
     line-height: var(--leading-snug);
   }
 
-  .side-timed__place {
-    width: 1%;
-    white-space: nowrap;
+  .side-entry__detail,
+  .side-entry__note {
+    margin: var(--space-1) 0 0;
     color: var(--color-ink-soft);
     font-size: var(--text-sm);
-    text-align: right;
-  }
-
-  .side-spaces thead th {
-    padding: var(--space-1) var(--space-3);
-    border-bottom: var(--rule-thin) solid var(--color-rule-fine);
-    color: var(--color-ink-soft);
-    font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    text-align: left;
-  }
-
-  .side-spaces tbody th,
-  .side-spaces tbody td {
-    padding: var(--space-2) var(--space-3);
-    border-bottom: var(--rule-hair) solid var(--color-rule-fine);
-    vertical-align: baseline;
-  }
-
-  .side-spaces__name {
-    font-size: var(--text-base);
-    font-weight: var(--weight-bold);
     line-height: var(--leading-snug);
   }
 
-  .side-spaces__detail {
-    color: var(--color-ink-soft);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-regular);
+  .side-entry--space {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .side-spaces__place {
-    width: 1%;
-    white-space: nowrap;
-    color: var(--color-ink-soft);
-    font-size: var(--text-sm);
-    text-align: right;
-  }
-
-  @media (min-width: 72rem) {
-    .side-program__blocks {
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    }
-  }
-
-  @media (max-width: 39.99rem) {
-    .side-timed thead,
-    .side-spaces thead {
-      display: none;
-    }
-
-    /* 列改成 grid 後，表格寬度不再由內容推導；固定成容器寬，nowrap 的地點欄才撑不寬。 */
-    .side-program table {
-      table-layout: fixed;
-    }
-
-    .side-timed tbody tr {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      column-gap: var(--space-3);
-      align-items: baseline;
-      padding-block: var(--space-3);
-      border-bottom: var(--rule-hair) solid var(--color-ink);
-    }
-
-    .side-timed tbody th,
-    .side-timed tbody td {
-      padding: 0;
-      border-bottom: 0;
-    }
-
-    .side-timed__time {
-      grid-area: 1 / 1;
-      width: auto;
-    }
-
-    .side-timed__place {
-      grid-area: 1 / 2;
-      width: auto;
-      text-align: end;
-    }
-
-    .side-timed__title {
-      grid-area: 2 / 1 / 3 / -1;
-      margin-top: var(--space-1);
-    }
-
-    .side-spaces tbody tr {
-      display: grid;
-      padding-block: var(--space-2);
-      border-bottom: var(--rule-hair) solid var(--color-rule-fine);
-    }
-
-    .side-spaces tbody th,
-    .side-spaces tbody td {
-      padding: 0;
-      border-bottom: 0;
-    }
-
-    .side-spaces__place {
-      width: auto;
-      margin-top: var(--space-1);
-      text-align: start;
+  @media (max-width: 47.99rem) {
+    .side-entry,
+    .side-entry--space {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
