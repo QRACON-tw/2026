@@ -11,9 +11,10 @@ export type SessionType =
   | 'activity'
   | 'exhibit'
   | 'screening'
-  | 'break';
+  | 'break'
+  | 'departure';
 
-export type RoomKind = 'hall' | 'center' | 'meeting' | 'outdoor';
+export type RoomKind = 'hall' | 'center' | 'meeting' | 'outdoor' | 'cafe';
 
 export interface Room {
   id: RoomId;
@@ -25,7 +26,7 @@ export interface Room {
   capacity?: number;
 }
 
-export type RoomId = 'hall' | 'key' | 'room1' | 'multi2';
+export type RoomId = 'hall' | 'key' | 'multi1' | 'multi2' | 'multi3' | 'cafe';
 
 export interface Session {
   
@@ -39,6 +40,8 @@ export interface Session {
   rooms: RoomId[] | 'all';
   speakerIds: string[];
   tags: string[];
+  /** Keep space activities on the timetable without generating an empty detail page. */
+  detailPage?: boolean;
   
   abstract?: string;
   keywords?: string[];
