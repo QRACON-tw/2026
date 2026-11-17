@@ -22,6 +22,7 @@ export const INDEXABLE_PAGES = [
   '/',
   '/about/',
   '/agenda/',
+  '/venue/',
   '/team/',
 ] as const;
 
