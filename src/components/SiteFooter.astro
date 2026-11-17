@@ -39,6 +39,9 @@ const links = nav.filter((item) => item.href !== '/');
             </li>
           ))
         }
+        <li class="footer-nav__archive">
+          <a href="/2025/" aria-label="前往 QRACON 2025 年度官網">2025 年度</a>
+        </li>
       </ul>
     </nav>
 
@@ -178,6 +181,22 @@ const links = nav.filter((item) => item.href !== '/');
     text-decoration: underline;
   }
 
+  .footer-nav__archive {
+    margin-inline-start: auto;
+  }
+
+  .footer-nav__archive a {
+    padding-inline: var(--space-4);
+    border: var(--rule-mid) solid var(--color-ink);
+    border-radius: var(--radius-chip);
+  }
+
+  .footer-nav__archive a:hover {
+    background: var(--color-ink);
+    color: var(--color-white);
+    text-decoration: none;
+  }
+
   .footer-meta {
     grid-column: 1 / span 8;
     display: flex;
@@ -211,6 +230,10 @@ const links = nav.filter((item) => item.href !== '/');
 
     .footer-nav {
       order: 3;
+    }
+
+    .footer-nav__archive {
+      margin-inline-start: 0;
     }
 
     .footer-meta {
