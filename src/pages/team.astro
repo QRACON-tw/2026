@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import placeholderAvatar from '../assets/team/qracon-placeholder-avatar.png';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import { teamGroups, teamHeadcount, photoOf } from '../data/team';
@@ -55,25 +56,19 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
             <p class="team__blurb">{group.blurb}</p>
             <ul class="team__members" role="list">
               {group.members.map((member) => {
-                const photo = photoOf(member);
+                const photo = photoOf(member) ?? placeholderAvatar;
                 return (
                   <li class="crew">
-                    {photo ? (
-                      <>
-                        <Image
-                          class="crew__photo"
-                          src={photo}
-                          alt=""
-                          widths={[160, 240, 320, 400]}
-                          sizes="(min-width: 48rem) 7.2rem, 29vw"
-                          format="webp"
-                          loading={group.id === 'core' ? 'eager' : 'lazy'}
-                        />
-                        <p class="crew__label">{member}</p>
-                      </>
-                    ) : (
-                      <p class="crew__plate">{member}</p>
-                    )}
+                    <Image
+                      class="crew__photo"
+                      src={photo}
+                      alt=""
+                      widths={[160, 240, 320, 400]}
+                      sizes="(min-width: 48rem) 7.2rem, 29vw"
+                      format="webp"
+                      loading={group.id === 'core' ? 'eager' : 'lazy'}
+                    />
+                    <p class="crew__label">{member}</p>
                   </li>
                 );
               })}
@@ -204,8 +199,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     object-fit: cover;
   }
 
-  .crew__label,
-  .crew__plate {
+  .crew__label {
     display: grid;
     place-items: center;
     min-height: 1.6rem;
@@ -219,15 +213,6 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 
   .crew__label {
     border-top: var(--rule-hair) solid var(--color-ink);
-  }
-
-  /* 沒有頭像的人：整張卡換成名牌，不重複寫名字。 */
-  .crew__plate {
-    grid-row: 1 / -1;
-    height: 100%;
-    background: var(--color-paper-deep);
-    font-weight: var(--weight-black);
-    letter-spacing: 0.04em;
   }
 
   @media (max-width: 47.99rem) {

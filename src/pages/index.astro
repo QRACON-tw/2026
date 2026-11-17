@@ -12,6 +12,7 @@ import wordmark from '../assets/brand/qracon-wordmark.png';
 import { site } from '../data/site';
 import { ticketGroups } from '../data/tickets';
 import { sessions, isListed } from '../data/sessions';
+import { departure } from '../data/side-program';
 import { roomById } from '../data/rooms';
 import { hhmm, minutesOf, toMinutes } from '../utils/time';
 import { buildEventStructuredData } from '../utils/seo';
@@ -61,7 +62,7 @@ const board = [
     place: `${busyRooms(hhmm(byId('error-correction').start), hhmm(byId('quantum-radar').end))} 處場地同時進行`,
   },
   { time: hhmm(byId('closing').start), item: '閉幕', place: '全體' },
-  { time: hhmm(byId('departure').start), item: '賦歸', place: '—' },
+  { time: departure.from, item: departure.title, place: '—' },
 ];
 
 const serial = String(site.edition).padStart(4, '0');
