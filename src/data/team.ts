@@ -26,7 +26,7 @@ export const teamGroups: TeamGroup[] = [
     name: '召組',
     en: 'CORE',
     blurb: '統籌年會方向與跨組協調。',
-    members: ['林恩慈', '賴品彤', '林昀儒'],
+    members: ['賴品彤', '林昀儒'],
   },
   {
     id: 'marketing',

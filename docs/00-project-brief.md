@@ -16,7 +16,7 @@
 | 報名       | KKTIX `sqcs.kktix.cc/events/qracon2026`，已開賣 | 已定 |
 | 主辦單位   | EntangleTech 前瞻量子教育平台；指導單位 EntangleTech | 已定（KKTIX／主視覺） |
 | 聯絡與社群 | sqcs12345@gmail.com、Instagram `entangletech.2023` | 已定 |
-| 籌備團隊   | 7 組、34 人；19 人有頭像 | 已上線 |
+| 籌備團隊   | 7 組、36 人；25 人有頭像 | 已上線 |
 
 ## 活動定位（承自 QRACON 2025）
 
