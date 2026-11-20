@@ -41,6 +41,28 @@ jobs:
       - name: Build the website
         run: pnpm build
 
+      - name: Check out the tarot site
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: QRACON-tw/Qracon2026_Tarot
+          ref: main
+          path: tarot
+          persist-credentials: false
+
+      - name: Install tarot dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: tarot
+
+      - name: Build the tarot site
+        run: pnpm build
+        working-directory: tarot
+        env:
+          ASTRO_SITE: https://qracon.entangletech.tw
+          ASTRO_BASE_PATH: /2026/tarot
+
+      - name: Mount the tarot site under /tarot/
+        run: mv tarot/dist dist/tarot
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
