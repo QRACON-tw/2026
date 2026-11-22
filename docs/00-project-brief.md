@@ -54,7 +54,7 @@
 | P2 骨架   | Astro 專案 scaffold、design token、版面骨架 | ✅ 完成 |
 | P3 首屏   | 雙狹縫干涉場 + 車票活動資訊                  | ✅ 完成 |
 | P4 內容頁 | 議程表、票種、團隊、贊助；講者與地圖待補     | 部分完成 |
-| P5 收尾   | OG 圖、SEO、canonical 完成；Lighthouse、正式部署待做 | 部分完成 |
+| P5 收尾   | OG 圖、SEO、canonical、正式部署（GitHub Pages）完成；Lighthouse 待做 | 部分完成 |
 
 ## 時程壓力
 
