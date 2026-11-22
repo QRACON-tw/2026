@@ -10,6 +10,7 @@ import { sessions, isListed } from '../data/sessions';
 import { minutesOf } from '../utils/time';
 import { site } from '../data/site';
 import { buildBreadcrumbStructuredData } from '../utils/seo';
+import { sitePath } from '../utils/paths';
 import type { RoomId } from '../types/agenda';
 
 const usage = (id: RoomId) => {
@@ -51,7 +52,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       <figure class="venue-map">
         <div class="venue-map__art">
           <img
-            src="/images/south-campus-map-redrawn.webp"
+            src={sitePath('/images/south-campus-map-redrawn.webp')}
             width="1825"
             height="862"
             alt="中央研究院南部院區鳥瞰示意圖，數字標示四處重要地點，名稱列於圖下方。"

@@ -1,9 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import Stamp from './Stamp.astro';
 import { drivingRoutes, transportModes } from '../data/transport';
-
-const availableModes = transportModes.filter((mode) => mode.kind !== 'pending');
 ---
 
 <ul class="modes" role="list" aria-label="前往南部院區的交通方式">
@@ -11,25 +8,21 @@ const availableModes = transportModes.filter((mode) => mode.kind !== 'pending');
     <li class="modes__row">
       <span class="modes__name">{mode.label}</span>
       <span class="modes__detail">
-        {mode.kind === 'pending' ? (
-          <Stamp label="待公布" tilt={false} />
-        ) : (
-          <button
-            class="modes__open"
-            type="button"
-            data-route-open={mode.id}
-            aria-haspopup="dialog"
-            aria-controls={`transport-route-${mode.id}`}
-          >
-            路線說明 <Icon name="arrow-right" size={16} />
-          </button>
-        )}
+        <button
+          class="modes__open"
+          type="button"
+          data-route-open={mode.id}
+          aria-haspopup="dialog"
+          aria-controls={`transport-route-${mode.id}`}
+        >
+          路線說明 <Icon name="arrow-right" size={16} />
+        </button>
       </span>
     </li>
   ))}
 </ul>
 
-{availableModes.map((mode) => (
+{transportModes.map((mode) => (
   <dialog
     class="route-dialog"
     id={`transport-route-${mode.id}`}
