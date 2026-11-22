@@ -17,7 +17,7 @@
 | 樣式     | **原生 CSS + CSS Custom Properties** | 見下方「樣式方案取捨」。                                |
 | 圖示     | `@lucide/astro`                      | 編譯期 inline SVG，零執行期成本。                       |
 | 圖片     | Astro `<Image />` + sharp            | 自動 WebP/AVIF、尺寸標註防 CLS。                        |
-| 部署     | **Cloudflare Pages**                 | 使用者環境已有 Cloudflare 工具鏈；PR preview 開箱即用。 |
+| 部署     | ~~Cloudflare Pages~~                 | 已改 GitHub Pages，見下方「部署與網域」。               |
 | 格式化   | Prettier + `prettier-plugin-astro`   | —                                                       |
 
 ## ✅ 動效：不用動畫函式庫（定案 2026-09-12）
@@ -59,6 +59,32 @@
 
 **結論**：本站是「少量頁面、高度客製視覺」，不是「大量頁面、重複元件」，
 Tailwind 的最大優勢在此不成立。已採 A。
+
+## ✅ 部署與網域：GitHub Pages（2026-11-22 依線上實況回寫）
+
+網域 `qracon.entangletech.tw`，CNAME 指向 `qracon-tw.github.io`。原始碼 repo 是 `QRACON-tw/2026`
+（舊網址 `Twcat0503/qracon_web_2026` 會轉址）。同一份 `main` 會建成兩份網站：
+
+| 網址 | 建置與部署 | 觸發 | base path |
+| --- | --- | --- | --- |
+| `qracon.entangletech.tw/2026/` | 本 repo 的 `.github/workflows/deploy-pages.yml`（Node 24）；同一個 artifact 另建 `QRACON-tw/Qracon2026_Tarot`，掛在 `/2026/tarot/` | push 到 `main`、手動 | `/2026`（`astro.config.mjs` 裡 `ASTRO_BASE_PATH` 的預設值） |
+| `qracon.entangletech.tw/` | `QRACON-tw/QRACON-tw.github.io` 的 `.github/workflows/deploy.yml`（Node 22）：挑組織內名稱是四位數年份、公開且開了 Pages 的最新 repo，clone 它的 `main` 來建 | 每 15 分鐘排程（該 revision 已部署過就跳過）、該 repo 的 push、手動 | `/`（`ASTRO_BASE_PATH=/`） |
+
+`/2025/` 是 `QRACON-tw/2025` 的 project site，與本 repo 無關。明年出現 `QRACON-tw/2027` 後，根路徑會自動換成 2027 站。
+
+寫程式與發布時：
+
+- 站內連結與 `public/` 檔案路徑一律經過 `sitePath()`（`src/utils/paths.ts`），或用 `astro:assets` import。
+  寫死 `/images/...` 在根路徑看起來正常，在 `/2026/` 底下會 404。
+- 兩個 workflow 都跑 `pnpm install --frozen-lockfile`，改依賴要一併提交 `pnpm-lock.yaml`。
+- 合併進 `main` 後，`/2026/` 由本 repo 的 workflow 直接部署；根路徑要等下一輪排程，GitHub 排程忙時還會延後。
+  急著更新就到 `QRACON-tw.github.io` 手動執行 workflow（手動觸發一定會部署）。
+
+已知問題：兩份都可被索引、canonical 各自指向自己，搜尋引擎會看到兩份相同內容，見 `05-open-questions.md` Q11。
+
+已停用：Cloudflare Pages（`qracon-web-2026.pages.dev`）與 `2026-qracon.entangletech.tw`。2026-11-05 曾在那裡上線，
+2026-11-22 查詢時兩個名稱都已沒有 DNS 記錄。`public/_headers` 是當時給 `*.pages.dev` 加 noindex 的設定，
+GitHub Pages 不會讀它，只會把它當一般檔案公開在 `/_headers`。
 
 ## Three.js 使用紀律（硬性）
 
@@ -103,4 +129,4 @@ public/
 - ~~報名平台~~ 已定 KKTIX（外站連結，不需 embed）。
 - 是否需要中英雙語。若需要，**必須在 P2 骨架階段就導入 i18n**，
   後補的成本是重寫所有樣板（SITCON 就卡在這裡）。
-- 網域（`qracon.tw`? 沿用 `qracon.entangletech.tw`?）。
+- ~~網域~~ 已定 `qracon.entangletech.tw`（GitHub Pages），見「部署與網域」。
