@@ -83,8 +83,8 @@ Tailwind 的最大優勢在此不成立。已採 A。
 已知問題：兩份都可被索引、canonical 各自指向自己，搜尋引擎會看到兩份相同內容，見 `05-open-questions.md` Q11。
 
 已停用：Cloudflare Pages（`qracon-web-2026.pages.dev`）與 `2026-qracon.entangletech.tw`。2026-11-05 曾在那裡上線，
-2026-11-22 查詢時兩個名稱都已沒有 DNS 記錄。`public/_headers` 是當時給 `*.pages.dev` 加 noindex 的設定，
-GitHub Pages 不會讀它，只會把它當一般檔案公開在 `/_headers`。
+2026-11-22 查詢時兩個名稱都已沒有 DNS 記錄。當時給 `*.pages.dev` 加 noindex 的 `public/_headers` 已刪除
+（GitHub Pages 不讀這個檔案，只會把它當一般檔案公開）。
 
 ## Three.js 使用紀律（硬性）
 
