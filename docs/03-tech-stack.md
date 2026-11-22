@@ -68,7 +68,7 @@ Tailwind 的最大優勢在此不成立。已採 A。
 | 網址 | 建置與部署 | 觸發 | base path |
 | --- | --- | --- | --- |
 | `qracon.entangletech.tw/2026/` | 本 repo 的 `.github/workflows/deploy-pages.yml`（Node 24）；同一個 artifact 另建 `QRACON-tw/Qracon2026_Tarot`，掛在 `/2026/tarot/` | push 到 `main`、手動 | `/2026`（`astro.config.mjs` 裡 `ASTRO_BASE_PATH` 的預設值） |
-| `qracon.entangletech.tw/` | `QRACON-tw/QRACON-tw.github.io` 的 `.github/workflows/deploy.yml`（Node 22）：挑組織內名稱是四位數年份、公開且開了 Pages 的最新 repo，clone 它的 `main` 來建 | 每 15 分鐘排程（該 revision 已部署過就跳過）、該 repo 的 push、手動 | `/`（`ASTRO_BASE_PATH=/`） |
+| `qracon.entangletech.tw/` | `QRACON-tw/QRACON-tw.github.io` 的 `.github/workflows/deploy.yml`（Node 22）：挑組織內名稱是四位數年份、公開且開了 Pages 的最新 repo，clone 它的 `main` 來建 | 排程（cron 設每 15 分鐘，實際約 4–8 小時一次；該 revision 已部署過就跳過）、該 repo 的 push、手動 | `/`（`ASTRO_BASE_PATH=/`） |
 
 `/2025/` 是 `QRACON-tw/2025` 的 project site，與本 repo 無關。明年出現 `QRACON-tw/2027` 後，根路徑會自動換成 2027 站。
 
@@ -77,8 +77,10 @@ Tailwind 的最大優勢在此不成立。已採 A。
 - 站內連結與 `public/` 檔案路徑一律經過 `sitePath()`（`src/utils/paths.ts`），或用 `astro:assets` import。
   寫死 `/images/...` 在根路徑看起來正常，在 `/2026/` 底下會 404。
 - 兩個 workflow 都跑 `pnpm install --frozen-lockfile`，改依賴要一併提交 `pnpm-lock.yaml`。
-- 合併進 `main` 後，`/2026/` 由本 repo 的 workflow 直接部署；根路徑要等下一輪排程，GitHub 排程忙時還會延後。
-  急著更新就到 `QRACON-tw.github.io` 手動執行 workflow（手動觸發一定會部署）。
+- 合併進 `main` 後，`/2026/` 由本 repo 的 workflow 直接部署；根路徑要等組織 repo 的下一次排程。
+  GitHub 不保證排程準時，2026-11-20～22 實測約 4–8 小時才跑一次（UTC 11/20 16:23、22:44，11/21 03:31、11:48、18:39、23:35，
+  11/22 03:29、11:53），所以根路徑可能落後好幾個小時。要馬上更新，就到 `QRACON-tw.github.io` 的 Actions 手動執行
+  「Deploy the latest QRACON annual site」（手動觸發一定會部署）。
 
 Canonical 一律指向 `/2026/`（2026-11-22 定案）：根路徑明年會換成 2027 站，`/2026/` 才是這一屆的長期網址。
 `canonicalSitePath()`（`src/utils/paths.ts`）不管這次建置的 base 是什麼，都把路徑放到 `/2026` 底下；

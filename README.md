@@ -5,7 +5,8 @@
 https://qracon.entangletech.tw/2026/
 
 部署在 GitHub Pages：push 到 `main` 會由 `.github/workflows/deploy-pages.yml` 部署 `/2026/`；
-網域根路徑 <https://qracon.entangletech.tw/> 是同一份網站，由 `QRACON-tw/QRACON-tw.github.io` 每 15 分鐘同步。
+網域根路徑 <https://qracon.entangletech.tw/> 是同一份網站，由 `QRACON-tw/QRACON-tw.github.io` 的排程同步；
+GitHub 實際約 4–8 小時才跑一次，合併後要馬上更新請到該 repo 的 Actions 手動執行 workflow。
 細節見 [docs/03-tech-stack.md](docs/03-tech-stack.md) 的「部署與網域」。
 
 # 技術站
