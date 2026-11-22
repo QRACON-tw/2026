@@ -8,7 +8,7 @@ import {
   buildSiteStructuredData,
   type StructuredData,
 } from '../utils/seo';
-import { sitePath } from '../utils/paths';
+import { canonicalSitePath, sitePath } from '../utils/paths';
 
 interface Props {
   title?: string;
@@ -37,13 +37,13 @@ const fullTitle = title
   : `${site.name} ${site.nameZh}｜${site.dateLabel} ${site.venue.org}${site.venue.name}`;
 
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
-const canonicalUrl = new URL(sitePath(canonicalPath), siteUrl);
+const canonicalUrl = new URL(canonicalSitePath(canonicalPath), siteUrl);
 canonicalUrl.search = '';
 canonicalUrl.hash = '';
 if (!canonicalUrl.pathname.endsWith('/')) canonicalUrl.pathname += '/';
 
 const canonical = includeCanonical ? canonicalUrl.href : undefined;
-const ogImage = new URL(sitePath(image), siteUrl).href;
+const ogImage = new URL(canonicalSitePath(image), siteUrl).href;
 const robots = noindex
   ? 'noindex, follow'
   : 'index, follow, max-image-preview:large';

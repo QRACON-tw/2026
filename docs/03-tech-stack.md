@@ -80,7 +80,10 @@ Tailwind 的最大優勢在此不成立。已採 A。
 - 合併進 `main` 後，`/2026/` 由本 repo 的 workflow 直接部署；根路徑要等下一輪排程，GitHub 排程忙時還會延後。
   急著更新就到 `QRACON-tw.github.io` 手動執行 workflow（手動觸發一定會部署）。
 
-已知問題：兩份都可被索引、canonical 各自指向自己，搜尋引擎會看到兩份相同內容，見 `05-open-questions.md` Q11。
+Canonical 一律指向 `/2026/`（2026-11-22 定案）：根路徑明年會換成 2027 站，`/2026/` 才是這一屆的長期網址。
+`canonicalSitePath()`（`src/utils/paths.ts`）不管這次建置的 base 是什麼，都把路徑放到 `/2026` 底下；
+`<link rel="canonical">`、`og:url`、`og:image`、JSON-LD 的網址與 `@id`、`sitemap.xml` 的 `<loc>`、`robots.txt` 的 `Sitemap:` 都用它。
+站內連結與資源仍用 `sitePath()`，在根路徑瀏覽的人會留在根路徑。`canonicalBasePath` 要與 `astro.config.mjs` 的預設 base 一致。
 
 已停用：Cloudflare Pages（`qracon-web-2026.pages.dev`）與 `2026-qracon.entangletech.tw`。2026-11-05 曾在那裡上線，
 2026-11-22 查詢時兩個名稱都已沒有 DNS 記錄。當時給 `*.pages.dev` 加 noindex 的 `public/_headers` 已刪除
