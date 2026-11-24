@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import StationSign from '../components/StationSign.astro';
 import Stamp from '../components/Stamp.astro';
-import { spaces, timed } from '../data/side-program';
+import { agendaEntries, spaces } from '../data/agenda';
 import { sessions, isListed } from '../data/sessions';
 import { minutesOf } from '../utils/time';
 import { site } from '../data/site';
@@ -25,9 +25,11 @@ const usage = (id: RoomId) => {
 };
 
 const timedUsage = (place: string) =>
-  timed.filter((item) => item.place === place).map((item) => item.title);
+  agendaEntries
+    .filter((item) => item.kind === 'program' && item.place === place)
+    .map((item) => item.title);
 
-const multiRoom2Usage = [usage('multi2'), ...timedUsage('多功能會議室（2）')]
+const multiRoom2Usage = [usage('multi2'), ...timedUsage('多功能會議室 (2)')]
   .filter((title) => title !== '—')
   .join('、');
 
