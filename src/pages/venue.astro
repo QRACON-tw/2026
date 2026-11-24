@@ -9,6 +9,7 @@ import { sessions, isListed } from '../data/sessions';
 import { minutesOf } from '../utils/time';
 import { site } from '../data/site';
 import { buildBreadcrumbStructuredData } from '../utils/seo';
+import { sitePath } from '../utils/paths';
 import type { RoomId } from '../types/agenda';
 
 const usage = (id: RoomId) => {
@@ -88,8 +89,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
 
 <BaseLayout
   title="會場與交通"
-  description={`QRACON 2026 在${site.venue.org}${site.venue.name}（${site.venue.city}）舉行。查看會場空間、活動平面圖與前往臺南會場的交通資訊。`}
-  noindex
+  description={`QRACON 2026 於 ${site.dateLabel} 在${site.venue.org}${site.venue.name}（${site.venue.city}）舉行。查看院區配置、會場空間與前往臺南會場的交通資訊。`}
   structuredData={structuredData}
 >
   <PageHead
@@ -141,7 +141,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       </h2>
       <p class="visually-hidden" id="rooms-scroll-hint">窄螢幕可左右滑動檢視完整表格。</p>
       <table class="rooms-table">
-        <caption>場地一覽（依議程草案）</caption>
+        <caption>場地一覽（依議程安排）</caption>
         <thead>
           <tr>
             <th scope="col">場地</th>

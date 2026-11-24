@@ -2,7 +2,12 @@
 這是 QRACON 2026 的官方網站，參考了 [SITCON 2026](https://sitcon.org/2026/) 的設計風格與3D會場地圖概念，同時參考了 QRACON2025 的內容與文案進行填充。
 
 # 網站
-https://2026-qracon.entangletech.tw/2026/
+https://qracon.entangletech.tw/2026/
+
+部署在 GitHub Pages：push 到 `main` 會由 `.github/workflows/deploy-pages.yml` 部署 `/2026/`；
+網域根路徑 <https://qracon.entangletech.tw/> 是同一份網站，由 `QRACON-tw/QRACON-tw.github.io` 的排程同步；
+GitHub 實際約 4–8 小時才跑一次，合併後要馬上更新請到該 repo 的 Actions 手動執行 workflow。
+細節見 [docs/03-tech-stack.md](docs/03-tech-stack.md) 的「部署與網域」。
 
 # 技術站
 - Astro
@@ -14,4 +19,4 @@ https://2026-qracon.entangletech.tw/2026/
 
 ## 院區圖素材
 
-- `public/images/south-campus-layout.webp` 為中央研究院南院服務處提供的院區配置圖；`public/images/south-campus-map-redrawn.webp` 是參照該圖製作的示意重繪。素材依[南院服務處政府網站資料開放宣告](https://dscs.sinica.edu.tw/declaration)使用，來源資訊保留於此專案文件。
+- `public/images/south-campus-layout.webp` 為中央研究院南院服務處提供的院區配置圖；`public/images/south-campus-map-redrawn.webp` 是參照該圖製作的示意重繪，已轉為灰階以符合全站無色相的視覺規範。素材依[南院服務處政府網站資料開放宣告](https://dscs.sinica.edu.tw/declaration)使用，來源資訊保留於此專案文件。

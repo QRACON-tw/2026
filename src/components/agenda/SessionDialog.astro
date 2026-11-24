@@ -1,5 +1,5 @@
 ---
-import { sessions, isListed } from '../../data/sessions';
+import { sessions, hasDetailPage } from '../../data/sessions';
 import SessionContent from './SessionContent.astro';
 ---
 
@@ -13,10 +13,10 @@ import SessionContent from './SessionContent.astro';
       autofocus
       aria-label="關閉議程詳情"
     >
-      關閉 <span aria-hidden="true">×</span>
+      <span aria-hidden="true">×</span>
     </button>
   </div>
-  {sessions.filter(isListed).map((session) => (
+  {sessions.filter(hasDetailPage).map((session) => (
     <section class="session-detail" data-session-detail={session.id} hidden>
       <SessionContent session={session} titleId={`dialog-title-${session.id}`} />
     </section>
@@ -62,7 +62,6 @@ import SessionContent from './SessionContent.astro';
   .session-dialog__close {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
     min-height: 2.75rem;
     padding: 0.25rem 0.5rem;
     border: 0;

@@ -4,6 +4,7 @@ import { env } from 'node:process';
 
 export default defineConfig({
   site: 'https://qracon.entangletech.tw',
+  // The default is also the canonical path (canonicalBasePath in src/utils/paths.ts).
   base: env.ASTRO_BASE_PATH ?? '/2026',
   fonts: [
     {

@@ -1,9 +1,9 @@
 import { roomById } from '../data/rooms';
-import { isListed, sessions } from '../data/sessions';
+import { hasDetailPage, sessions } from '../data/sessions';
 import { site } from '../data/site';
 import { ticketGroups } from '../data/tickets';
 import type { Session } from '../types/agenda';
-import { sitePath } from './paths';
+import { canonicalSitePath } from './paths';
 
 export interface BreadcrumbItem {
   label: string;
@@ -12,7 +12,7 @@ export interface BreadcrumbItem {
 
 export type StructuredData = Record<string, unknown>;
 
-const absoluteUrl = (path: string, siteUrl: URL) => new URL(sitePath(path), siteUrl).href;
+const absoluteUrl = (path: string, siteUrl: URL) => new URL(canonicalSitePath(path), siteUrl).href;
 
 export const organizationId = (siteUrl: URL) => absoluteUrl('/#organization', siteUrl);
 export const websiteId = (siteUrl: URL) => absoluteUrl('/#website', siteUrl);
@@ -22,12 +22,13 @@ export const INDEXABLE_PAGES = [
   '/',
   '/about/',
   '/agenda/',
+  '/venue/',
   '/team/',
 ] as const;
 
 // A session needs both a unique abstract and a named speaker before it earns an index entry.
 export const isIndexableSession = (session: Session) =>
-  isListed(session) && Boolean(session.abstract?.trim() && session.speakerIds.length);
+  hasDetailPage(session) && Boolean(session.abstract?.trim() && session.speakerIds.length);
 
 export function getIndexablePaths(): string[] {
   return [
@@ -147,7 +148,7 @@ export function buildSessionStructuredData(session: Session, siteUrl: URL): Stru
     name: session.title,
     description:
       session.abstract?.trim() ||
-      `${session.title}，QRACON 2026 議程草案場次，時間為 ${site.dateLabel}。`,
+      `${session.title}，QRACON 2026 議程場次，時間為 ${site.dateLabel}。`,
     url: sessionUrl,
     image: [absoluteUrl('/og-image.png', siteUrl)],
     startDate: session.start,
