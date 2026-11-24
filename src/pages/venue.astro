@@ -3,9 +3,8 @@ import TransportInfo from '../components/TransportInfo.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import StationSign from '../components/StationSign.astro';
-import RowTable from '../components/RowTable.astro';
 import Stamp from '../components/Stamp.astro';
-import { rooms } from '../data/rooms';
+import { spaces, timed } from '../data/side-program';
 import { sessions, isListed } from '../data/sessions';
 import { minutesOf } from '../utils/time';
 import { site } from '../data/site';
@@ -24,6 +23,61 @@ const usage = (id: RoomId) => {
   const titles = inRoom.slice(0, 2).map((s) => s.title);
   return inRoom.length > 2 ? `${titles.join('、')} 等 ${inRoom.length} 場` : titles.join('、');
 };
+
+const timedUsage = (place: string) =>
+  timed.filter((item) => item.place === place).map((item) => item.title);
+
+const multiRoom2Usage = [usage('multi2'), ...timedUsage('多功能會議室（2）')]
+  .filter((title) => title !== '—')
+  .join('、');
+
+const cafeUsage = spaces
+  .filter((space) => space.place === '2 樓咖啡廳')
+  .map((space) => space.name)
+  .join('、');
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const venueRows = [
+  {
+    name: '國際會議廳',
+    capacity: '300 人',
+    use: usage('hall'),
+    location: '綜合大樓 B 棟 1 樓',
+  },
+  {
+    name: '關鍵中心演講廳',
+    capacity: '100 人',
+    use: usage('key'),
+    location: '關鍵中心大樓 1 樓',
+  },
+  {
+    name: '多功能會議室（1）',
+    capacity: '50 人',
+    use: timedUsage('多功能會議室（1）').join('、') || '—',
+    location: '學人會館 2 樓',
+  },
+  {
+    name: '多功能會議室（2）',
+    capacity: '50 人',
+    use: multiRoom2Usage || '—',
+    location: '學人會館 2 樓',
+  },
+  {
+    name: '多功能會議室（3）',
+    capacity: '50 人',
+    use: timedUsage('多功能會議室（3）').join('、') || '—',
+    location: '學人會館 2 樓',
+  },
+  {
+    name: '2 樓咖啡廳',
+    capacity: '—',
+    use: cafeUsage || '—',
+    location: '2 樓',
+  },
+];
 
 const breadcrumbs = [
   { label: '首頁', href: '/' },
@@ -52,10 +106,10 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       <figure class="venue-map">
         <div class="venue-map__art">
           <img
-            src={sitePath('/images/south-campus-map-redrawn.webp')}
+            src={`${baseUrl}images/south-campus-map-redrawn.webp`}
             width="1825"
             height="862"
-            alt="中央研究院南部院區鳥瞰示意圖，數字標示四處重要地點，名稱列於圖下方。"
+            alt="中央研究院南部院區灰階鳥瞰示意圖，數字標示四處重要地點，名稱列於圖下方。"
             loading="lazy"
             decoding="async"
           />
@@ -75,10 +129,17 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
       </figure>
     </section>
 
-    <section class="venue-page__rooms" aria-labelledby="rooms-title">
+    <section
+      class="venue-page__rooms"
+      role="region"
+      aria-labelledby="rooms-title"
+      aria-describedby="rooms-scroll-hint"
+      tabindex="0"
+    >
       <h2 class="visually-hidden" id="rooms-title">
         場地一覽
       </h2>
+      <p class="visually-hidden" id="rooms-scroll-hint">窄螢幕可左右滑動檢視完整表格。</p>
       <table class="rooms-table">
         <caption>場地一覽（依議程安排）</caption>
         <thead>
@@ -90,13 +151,19 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
           </tr>
         </thead>
         <tbody>
-          {rooms.map((room) => (
+          {venueRows.map((room) => (
             <tr>
               <th scope="row">{room.name}</th>
-              <td class="tnum">{room.capacity ? `${room.capacity} 人` : '—'}</td>
-              <td>{usage(room.id)}</td>
+              <td class="tnum">{room.capacity}</td>
+              <td>{room.use}</td>
               <td>
-                <Stamp label="待確認" tilt={false} />
+                {room.name === '2 樓咖啡廳' ? (
+                  <span class="rooms-table__location">
+                    {room.location} <Stamp label="棟別待確認" tilt={false} />
+                  </span>
+                ) : (
+                  room.location
+                )}
               </td>
             </tr>
           ))}
@@ -109,11 +176,65 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
         交通方式
       </h2>
       <TransportInfo />
-      <RowTable
-        class="venue-page__walk"
-        caption="從院區大門到會場"
-        rows={[{ label: '步行指引', value: null }]}
-      />
+    </section>
+
+    <section class="venue-page__walk" aria-labelledby="walk-title">
+      <h2 id="walk-title">院區內步行指引</h2>
+      <p class="walk-guide__lede">從南部院區大門出發，沿黑色路線步行至活動報到處。</p>
+      <figure class="walk-guide">
+        <div class="walk-guide__art">
+          <img
+            src={`${baseUrl}images/south-campus-walking-guide.png`}
+            width="1448"
+            height="1086"
+            alt="步行路線示意圖：黑線由右下方的南部院區大門出發，沿院區右側道路通往活動報到處。"
+            loading="lazy"
+            decoding="async"
+          />
+          <p class="walk-map-label walk-map-label--end" aria-hidden="true">
+            <span class="walk-map-label__kind">終點</span>
+            <strong>活動報到處</strong>
+          </p>
+          <p class="walk-map-label walk-map-label--start" aria-hidden="true">
+            <span class="walk-map-label__kind">起點</span>
+            <strong>南部院區大門</strong>
+          </p>
+          <ul class="walk-guide__building-labels" aria-label="院區建物名稱">
+            <li class="walk-guide__building-label walk-guide__building-label--scholars" style="--building-x: 57%; --building-y: 24%">
+              <strong>綜合大樓 B 棟</strong>
+              <span>學人會館・多功能會議室</span>
+            </li>
+            <li class="walk-guide__building-label walk-guide__building-label--conference" style="--building-x: 79%; --building-y: 27%">
+              <strong>綜合大樓 B 棟</strong>
+              <span>國際會議廳</span>
+            </li>
+            <li class="walk-guide__building-label walk-guide__building-label--services" style="--building-x: 73%; --building-y: 35%">
+              <strong>綜合大樓 A 棟</strong>
+              <span>南院服務處・人文社會研究基地</span>
+            </li>
+            <li class="walk-guide__building-label walk-guide__building-label--key" style="--building-x: 75%; --building-y: 55%">
+              <strong>研究大樓 II</strong>
+              <span>關鍵議題研究中心</span>
+            </li>
+            <li class="walk-guide__building-label walk-guide__building-label--greenhouse" style="--building-x: 42%; --building-y: 52%">
+              <strong>溫室</strong>
+              <span>精密溫室・玻璃溫室</span>
+            </li>
+            <li class="walk-guide__building-label walk-guide__building-label--research" style="--building-x: 42%; --building-y: 75%">
+              <strong>研究大樓 I</strong>
+              <span>農業生物科技研究中心</span>
+            </li>
+          </ul>
+        </div>
+        <figcaption class="walk-guide__caption">
+          <p class="walk-guide__route">
+            <span><strong>起點</strong>南部院區大門</span>
+            <span class="walk-guide__arrow" aria-hidden="true">→</span>
+            <span><strong>終點</strong>活動報到處</span>
+          </p>
+          <p class="walk-guide__note">路線依院區配置圖重繪，請以活動當日現場指標為準。</p>
+        </figcaption>
+      </figure>
     </section>
   </div>
 </BaseLayout>
@@ -154,6 +275,7 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     display: block;
     width: 100%;
     height: auto;
+    filter: grayscale(1);
   }
 
   .venue-map__markers {
@@ -228,6 +350,11 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     overflow-x: auto;
   }
 
+  .venue-page__rooms:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: var(--space-1);
+  }
+
   .rooms-table {
     width: 100%;
     min-width: 40rem;
@@ -270,13 +397,197 @@ const structuredData = [buildBreadcrumbStructuredData(breadcrumbs, siteUrl)];
     white-space: nowrap;
   }
 
+  .rooms-table__location {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+  }
+
   .venue-page__transport {
     grid-column: 1 / -1;
     display: block;
   }
 
-  .venue-page :global(.venue-page__walk) {
-    margin-top: var(--space-8);
+  .venue-page__walk {
+    grid-column: 1 / -1;
+  }
+
+  .venue-page__walk h2 {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-xl);
+  }
+
+  .walk-guide__lede {
+    margin: 0 0 var(--space-4);
+    color: var(--color-ink-soft);
+  }
+
+  .walk-guide {
+    margin: 0;
+  }
+
+  .walk-guide__art {
+    position: relative;
+    overflow: hidden;
+    border: var(--rule-hair) solid var(--color-ink);
+    background: var(--color-paper);
+  }
+
+  .walk-guide__art img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .walk-map-label {
+    position: absolute;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    max-width: calc(100% - var(--space-4));
+    margin: 0;
+    padding: var(--space-1) var(--space-2);
+    border: var(--rule-hair) solid var(--color-ink);
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-size: clamp(var(--text-xs), 1vw, var(--text-sm));
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+    box-shadow: 0.15rem 0.15rem 0 var(--color-ink);
+  }
+
+  .walk-map-label__kind {
+    padding: 0 var(--space-1);
+    background: var(--color-ink);
+    color: var(--color-white);
+    font-family: var(--font-sign);
+    font-weight: var(--weight-sign-heavy);
+    letter-spacing: var(--stamp-tracking);
+  }
+
+  .walk-map-label--end {
+    top: 24%;
+    left: 65%;
+  }
+
+  .walk-map-label--start {
+    top: 76%;
+    left: 58%;
+  }
+
+  .walk-guide__building-labels {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    pointer-events: none;
+  }
+
+  .walk-guide__building-label {
+    position: absolute;
+    top: var(--building-y);
+    left: var(--building-x);
+    display: grid;
+    justify-items: center;
+    max-width: 28%;
+    transform: translate(-50%, -50%);
+    padding: 0.2rem 0.35rem;
+    border: var(--rule-hair) solid var(--color-ink);
+    background: rgb(255 255 255 / 94%);
+    color: var(--color-ink);
+    font-size: clamp(0.5rem, 0.78vw, 0.78rem);
+    font-weight: var(--weight-bold);
+    line-height: 1.2;
+    text-align: center;
+    box-shadow: 0.1rem 0.1rem 0 var(--color-ink);
+  }
+
+  .walk-guide__building-label strong {
+    white-space: nowrap;
+  }
+
+  .walk-guide__building-label span {
+    font-size: 0.9em;
+    font-weight: 400;
+  }
+
+  .walk-guide__caption {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border: var(--rule-hair) solid var(--color-ink);
+    border-top: 0;
+    background: var(--color-white);
+  }
+
+  .walk-guide__route {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+    font-weight: var(--weight-bold);
+  }
+
+  .walk-guide__route strong {
+    margin-right: var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+  }
+
+  .walk-guide__arrow {
+    color: var(--color-ink-soft);
+  }
+
+  .walk-guide__note {
+    margin: var(--space-2) 0 0;
+    color: var(--color-ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 35rem) {
+    .walk-map-label {
+      gap: var(--space-1);
+      padding: var(--space-1);
+      font-size: 0.68rem;
+    }
+
+    .walk-map-label--end {
+      top: 16%;
+      left: 57%;
+    }
+
+    .walk-map-label--start {
+      top: 77%;
+      left: 58%;
+    }
+
+    .walk-guide__caption {
+      gap: var(--space-3);
+      padding: var(--space-3);
+    }
+
+    .walk-guide__building-label {
+      padding: 0.12rem 0.2rem;
+      font-size: 0.5rem;
+    }
+
+    .walk-guide__building-label--scholars {
+      --building-y: 28%;
+    }
+
+    .walk-guide__building-label--conference,
+    .walk-guide__building-label--services {
+      max-width: 32%;
+    }
+
+    .walk-guide__route {
+      gap: var(--space-2);
+    }
+
   }
 
   @media (max-width: 47.99rem) {
