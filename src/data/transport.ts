@@ -54,11 +54,6 @@ export const transportModes = [
       { label: '以 Google 地圖規劃開車路線', href: directionsUrl('driving') },
     ],
   },
-  {
-    id: 'shuttle',
-    label: '接駁車',
-    kind: 'pending',
-  },
 ] as const;
 
 export const drivingRoutes = [
